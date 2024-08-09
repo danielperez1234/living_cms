@@ -1,95 +1,57 @@
+"use client";
+import BannerTable from "@/components/banner/banner_table";
+import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import Image from "next/image";
-import styles from "./page.module.css";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
+    <main>
+      <Box
+        my={10}
+        display={"flex"}
+        flexDirection={"row"}
+        justifyContent={"center"}
+        position={"relative"}
+        height={"100px"}
+        width={{ sm: "100%" }}
+      >
         <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+          objectPosition="center"
+          objectFit="contain"
+          fill
+          src="/marca/logo.png"
+          alt="logo Living"
         />
-      </div>
+      </Box>
+      <Divider />
+      <Box
+        mt={10}
+        marginX={"30%"}
+        display={"flex"}
+        alignItems={"center"}
+        flexDirection={"column"}
+      >
+        <Typography variant="h1">Iniciar Sesión</Typography>
+        <Box height={30} />
+        <TextField
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+          fullWidth
+          id="standard-helperText"
+          label="Correo"
+          variant="standard"
+        />
+        <Box height={20} />
+        <TextField fullWidth
+          id="standard-helperText"
+          label="Contraseña"
+          variant="standard" />
+          <Box height={20}/>
+          <Button onClick={()=>router.push('/banner')}>
+            Entrar
+          </Button>
+      </Box>
     </main>
   );
 }
