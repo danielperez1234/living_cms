@@ -16,6 +16,7 @@ import Link from "next/link";
 //Icons
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import SimplePagination from "../common/paginado";
 interface Banner {
   id: number;
   title: string;
@@ -96,6 +97,8 @@ const BannerTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box height={'20px'}/>
+      <SimplePagination/>
     </Box>
   );
 };
