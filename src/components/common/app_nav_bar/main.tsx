@@ -19,7 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import AppDrawer from "./app_drawer";
 import { AppColorsHex } from "@/const/colors";
-export default function AppNavBar({}) {
+export default function AppNavBar({title}:{title:string}) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   return (
     <Box height={{ sm: "65px", xs: "65px", md: "70px" }} >
@@ -39,8 +39,8 @@ export default function AppNavBar({}) {
                 >
                 <MenuIcon color="primary" />
               </IconButton>
-            <Typography variant="h1" color={AppColorsHex.black}>
-            Banner
+            <Typography variant="h1" color={AppColorsHex.black} textTransform={'capitalize'}>
+            {title}
             </Typography>
                 </Box>
               
@@ -56,7 +56,7 @@ export default function AppNavBar({}) {
              width={{ sm: "30%", md: "20%", xs: "50%" }}
             >
               <Image
-              
+                
                 objectPosition="right center"
                 objectFit="contain"
                 fill

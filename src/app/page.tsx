@@ -48,7 +48,7 @@ export default function Home() {
           label="Contraseña"
           variant="standard" />
           <Box height={20}/>
-          <Button onClick={()=>router.push('/banner')}>
+          <Button onClick={()=>router.push('/banners')}>
             Entrar
           </Button>
       </Box>
