@@ -10,7 +10,7 @@ import { useState } from "react";
 
 export default function Home() {
   const router = useRouter();
-  const [errorMsg,setErrorMsg] = useState<string|undefined>();
+  const [errorMsg, setErrorMsg] = useState<string | undefined>();
   var user: UserLoginRequest = {
     email: "",
     password: ""
@@ -44,51 +44,54 @@ export default function Home() {
       >
         <Typography variant="h1">Iniciar Sesión</Typography>
         <Box height={30} />
-        <TextField
-          fullWidth
-          id="standard-helperText"
-          label="Correo"
-          variant="standard"
-          onChange={(e) => {
-            user.email = e.target.value;
-          }}
-        />
-        <Box height={20} />
-        <TextField
-          fullWidth
-          id="standard-helperText"
-          label="Contraseña"
-          
-          onChange={(e) => {
-            user.password = e.target.value;
-          }}
-          variant="standard"
-        />
-        {
-          errorMsg &&
-          <Typography color={'error'} variant="body1">
-            {errorMsg}
-          </Typography>
-        }
-        <Box height={20} />
-        <Button
-          onClick={async () => {
-            const response = await Login(user);
-            console.log( typeof response);
-            console.log('response');
-            if(typeof response === "number"){
-              if(response == 401)
-              setErrorMsg('Usuario o contraseña incorrectos.')
-            }else if ( response  ) {
-              localStorage.setItem(storageKeys.token,response.token)
-              localStorage.setItem(storageKeys.email,response.email)
-              localStorage.setItem(storageKeys.userName,response.userName)
-              router.push("/banners");
-            }
-          }}
-        >
-          Entrar
-        </Button>
+        <form style={{ width: "100%" }}>
+          <TextField
+            fullWidth
+            id="standard-helperText"
+            label="Correo"
+            type="email"
+            variant="standard"
+            onChange={(e) => {
+              user.email = e.target.value;
+            }}
+          />
+          <Box height={20} />
+
+          <TextField
+            fullWidth
+            type="password"
+            id="standard-helperText"
+            label="Contraseña"
+            onChange={(e) => {
+              user.password = e.target.value;
+            }}
+            variant="standard"
+          />
+          {errorMsg && (
+            <Typography color={"error"} variant="body1">
+              {errorMsg}
+            </Typography>
+          )}
+          <Box height={20} />
+          <Button
+            onClick={async () => {
+              console.log("holaa");
+              const response = await Login(user);
+              console.log(response.status);
+
+              if (response.status == 401) {
+                setErrorMsg("Usuario o contraseña incorrectos.");
+              } else if (response.status == 200 && response.data) {
+                localStorage.setItem(storageKeys.token, response.data.token);
+                localStorage.setItem(storageKeys.email, response.data.email);
+                localStorage.setItem(storageKeys.userName, response.data.userName);
+                router.push("/banners");
+              }
+            }}
+          >
+            Entrar
+          </Button>
+        </form>
       </Box>
     </main>
   );

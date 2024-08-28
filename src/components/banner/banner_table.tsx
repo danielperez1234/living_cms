@@ -10,48 +10,41 @@ import {
   Paper,
   TextField,
   Box,
-  Fab,
+  Fab
 } from "@mui/material";
 import Link from "next/link";
 //Icons
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
 import SimplePagination from "../common/paginado";
-interface Banner {
-  id: number;
-  title: string;
-  image: string;
-}
-const banners = [
-  { id: 1, title: "Banner 1", image: "/path/to/image1.jpg" },
-  { id: 2, title: "Banner 2", image: "/path/to/image2.jpg" },
-  { id: 3, title: "Banner 3", image: "/path/to/image3.jpg" },
-  { id: 4, title: "Banner 4", image: "/path/to/image4.jpg" },
-  { id: 5, title: "Banner 5", image: "/path/to/image5.jpg" },
-  { id: 6, title: "Banner 6", image: "/path/to/image6.jpg" },
-  { id: 7, title: "Banner 7", image: "/path/to/image7.jpg" },
-  { id: 8, title: "Banner 8", image: "/path/to/image8.jpg" },
-  { id: 9, title: "Banner 9", image: "/path/to/image9.jpg" },
-  { id: 10, title: "Banner 10", image: "/path/to/image10.jpg" },
-  // Agrega más banners aquí
-];
+import { Banner } from "@/service/banners/interface";
+import ImageIcon from "@mui/icons-material/Image";
+import AgregarBannerModal from "./add_banner";
+import useBannerStore from "@/service/banners/store";
 
-const BannerTable = () => {
+const BannerTable = ({ banners,location }: { banners: Banner[],location:string }) => {
+  // zustandHooks
+  const postBanner = useBannerStore(state=>state.addBanner);
+  
+  //local hooks
   const [searchTerm, setSearchTerm] = useState("");
+  const [openAddModal, setOpenAddModal] = useState(false);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
   const filteredBanners = banners.filter((banner) =>
-    banner.title.toLowerCase().includes(searchTerm)
+    banner.assetName?.toLowerCase().includes(searchTerm)
   );
   const handleClick = (banner: Banner) => {
-    console.log(`Banner clickeado: ${banner.title}`);
+    console.log(`Banner clickeado: ${banner.assetName}`);
     // Aquí puedes hacer cualquier otra cosa, como redirigir a una página, abrir un modal, etc.
   };
   return (
     <Box>
+      <AgregarBannerModal open={openAddModal} onClose={()=>setOpenAddModal(false)} onSubmit={(asset =>{
+        postBanner({Location: location,...asset});
+        })}/>
       <Box
         display={"flex"}
         width={"96%"}
@@ -59,7 +52,7 @@ const BannerTable = () => {
         justifyContent={"end"}
         bottom={100}
       >
-        <Fab variant="extended" color="primary" aria-label="add">
+        <Fab variant="extended" color="primary" aria-label="add" onClick={()=>setOpenAddModal(true)}>
           <AddIcon sx={{ mr: 1 }} />
           Agregar
         </Fab>
@@ -88,17 +81,19 @@ const BannerTable = () => {
                 onClick={() => handleClick(banner)}
                 style={{ cursor: "pointer" }}
               >
-                <TableCell>{banner.title}</TableCell>
+                <TableCell>{banner.assetName ?? "no name"}</TableCell>
                 <TableCell>
-                  <Link href={`liga${banner.image}`}>{banner.image}</Link>
+                  <Link href={`${banner.assetUrl}`}>
+                    <ImageIcon />
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box height={'20px'}/>
-      <SimplePagination/>
+      <Box height={"20px"} />
+      <SimplePagination />
     </Box>
   );
 };
