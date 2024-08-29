@@ -15,7 +15,7 @@ export  async function GetBannersLocation(location:string):Promise<Response<Bann
     error: `${err}`
   };;
 }}
-export  async function PostBannersLocation(banner:BannerPost):Promise<Response<Banner>>{
+export  async function PostBannersLocation(banner:BannerPost){
   
   try{
     const formData = new FormData();
@@ -34,3 +34,12 @@ export  async function PostBannersLocation(banner:BannerPost):Promise<Response<B
     error: `${err}`
   };;
 }}
+// const formData = new FormData();
+//     Object.keys(banner).forEach(key => {if(banner[key as keyof BannerPost] != null)formData.append(key, banner[key as keyof BannerPost]! )})
+//     console.log(banner.AssetFile?.size)
+//   return await request<Banner>({
+//     method:"POST",
+//     endpoint:`/api/Assets/upload-asset`,
+//     headers:{
+//       "Content-Type": `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,},
+//     formData: formData
