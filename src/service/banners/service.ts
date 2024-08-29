@@ -25,7 +25,7 @@ export  async function PostBannersLocation(banner:BannerPost):Promise<Response<B
     method:"POST",
     endpoint:`/api/Assets/upload-asset`,
     headers:{
-      "Content-Type": `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,},
+      "Content-Type": `multipart/form-data;`,},
     formData: formData
   })
 }catch(err){

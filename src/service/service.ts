@@ -1,19 +1,24 @@
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 type RequestOptions = {
   method: HttpMethod;
   endpoint: string;
   headers?: Record<string, string>;
   body?: any;
-  formData?:FormData;
+  formData?: FormData;
   token?: string;
 };
+
 export interface Response<T> {
   status: number;
   data?: T | undefined;
   message?: string; // Opcional, por si deseas incluir un mensaje en la respuesta
   error?: string; // Opcional, por si deseas manejar errores
 }
-const mainRoute = "http://localhost:5015";
+
+const mainRoute = "http://64.23.178.44";
+
 export async function request<T>({
   method,
   endpoint,
@@ -26,32 +31,28 @@ export async function request<T>({
     if (token) {
       headers = { Authorization: `Bearer ${token}`, ...headers };
     }
-    const options: RequestInit = {
+
+    const config: AxiosRequestConfig = {
       method,
+      url: mainRoute + endpoint,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": formData ? "multipart/form-data" : "application/json",
         ...headers
       },
-      body: body ? JSON.stringify(body) : formData
+      data: formData || body
     };
 
-    const response = await fetch(mainRoute + endpoint, options);
+    const response: AxiosResponse<T> = await axios(config);
 
-    if (!response.ok) {
-      if (response.status == 401) {
-        return { status: response.status };
-      }
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
     return {
       status: response.status,
-
-      data: data
+      data: response.data
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error during request:", error);
-    throw error;
+    return {
+      status: error.response?.status || 500,
+      error: error.message
+    };
   }
 }
