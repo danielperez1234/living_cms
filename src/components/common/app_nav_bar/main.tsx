@@ -60,7 +60,7 @@ export default function AppNavBar({title}:{title:string}) {
                 objectPosition="right center"
                 objectFit="contain"
                 fill
-                src="/marca/logo.png"
+                src="/web/marca/logo.png"
                 alt="logo Living"
               />
               
