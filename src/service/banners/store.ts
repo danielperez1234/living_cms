@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import { Banner, BannerPost } from "./interface";
-import { GetBannersLocation, PostBannersLocation } from "./service";
+import { DeleteBanner, GetBannersLocation, PostBannersLocation } from "./service";
 
 interface BannerState {
   banners: Banner[];
   errorMsg: string | undefined;
   loading: boolean;
   getBanners: (location: string) => void;
-  addBanner: (banner: BannerPost) => void;
+  addBanner: (banner: BannerPost) => Promise<void>;
+  deleteBanner: (id: string) => Promise<void>;
   clean: () => void;
 }
 
@@ -44,6 +45,13 @@ const useBannerStore= create<BannerState>()((set) => ({
     set((state=>({...state,loading:true})));
     await PostBannersLocation(banner);
     set((state=>({...state,loading:false})));
+    return;
+  },
+  deleteBanner: async (id) => {
+    set((state=>({...state,loading:true})));
+    await DeleteBanner(id);
+    set((state=>({...state,loading:false})));
+    return;
   }
 }));
 export default useBannerStore;

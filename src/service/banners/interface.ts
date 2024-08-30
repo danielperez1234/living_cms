@@ -3,6 +3,7 @@ export interface Banner {
   assetUrl?:         string;
   assetName?:        string | null;
   assetDescription?: string | null;
+  link:         string;
   location:         string;
   createdAt:        Date;
   updatedAt:        Date;
@@ -12,4 +13,5 @@ export interface BannerPost {
   AssetName:        string;
   AssetDescription: string;
   Location:         string;
+  link:         string;
 }

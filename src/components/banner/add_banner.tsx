@@ -13,18 +13,21 @@ interface AddAssetModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: AssetFormData) => void;
+  accept:string;
 }
 
 interface AssetFormData {
   AssetFile: File | null;
   AssetName: string;
   AssetDescription: string;
+  link: string;
 }
 
-const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSubmit }) => {
+const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSubmit,accept }) => {
   const [file, setFile] = useState<File | null>(null);
   const [assetName, setAssetName] = useState<string>('');
   const [assetDescription, setAssetDescription] = useState<string>('');
+  const [link, setLink] = useState<string>('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -33,7 +36,7 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
   };
 
   const handleSubmit = () => {
-    onSubmit({ AssetFile: file, AssetName: assetName, AssetDescription: assetDescription });
+    onSubmit({ AssetFile: file, AssetName: assetName, AssetDescription: assetDescription,link:link });
     onClose(); // Close the modal after submitting
   };
 
@@ -71,6 +74,10 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
             onChange={(e) => setAssetName(e.target.value)}
             margin="normal"
             variant="outlined"
+            inputProps={{
+              maxLength: 30
+            }}
+            
           />
           <TextField
             fullWidth
@@ -80,7 +87,23 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
             margin="normal"
             variant="outlined"
             multiline
+            
+            inputProps={{
+              maxLength: 100
+            }}
             rows={4}
+          />
+          <TextField
+            fullWidth
+            label="Link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            margin="normal"
+            variant="outlined"
+            inputProps={{
+              maxLength: 200
+            }}
+            
           />
           <Button
             variant="contained"
@@ -90,8 +113,9 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
           >
             Seleccionar archivo
             <input
-              type="file"
+              type={"file"}
               hidden
+              accept={accept}
               onChange={handleFileChange}
             />
           </Button>

@@ -11,10 +11,10 @@ import { useState } from "react";
 export default function Home() {
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
-  var user: UserLoginRequest = {
+  const [user, setUser] = useState<UserLoginRequest>({
     email: "",
     password: ""
-  };
+  });
   return (
     <main>
       <Box
@@ -51,8 +51,13 @@ export default function Home() {
             label="Correo"
             type="email"
             variant="standard"
-            onChange={(e) => {
-              user.email = e.target.value;
+            onChange={(e) => {+
+              setUser((value) => {
+                return {
+                  ...value,
+                  email: e.target.value
+                };
+              });
             }}
           />
           <Box height={20} />
@@ -62,8 +67,13 @@ export default function Home() {
             type="password"
             id="standard-helperText"
             label="Contraseña"
-            onChange={(e) => {
-              user.password = e.target.value;
+            onChange={(e) => {+
+              setUser((value) => {
+                return {
+                  ...value,
+                  password: e.target.value
+                };
+              });
             }}
             variant="standard"
           />
@@ -75,16 +85,17 @@ export default function Home() {
           <Box height={20} />
           <Button
             onClick={async () => {
-              console.log("holaa");
               const response = await Login(user);
-              console.log(response.status);
 
               if (response.status == 401) {
                 setErrorMsg("Usuario o contraseña incorrectos.");
               } else if (response.status == 200 && response.data) {
                 localStorage.setItem(storageKeys.token, response.data.token);
                 localStorage.setItem(storageKeys.email, response.data.email);
-                localStorage.setItem(storageKeys.userName, response.data.userName);
+                localStorage.setItem(
+                  storageKeys.userName,
+                  response.data.userName
+                );
                 router.push("/banners");
               }
             }}

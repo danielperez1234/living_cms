@@ -4,7 +4,6 @@ import Stack from '@mui/material/Stack';
 
 const SimplePagination: React.FC = () => {
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-    console.log(`Current Page: ${page}`);
   };
 
   return (

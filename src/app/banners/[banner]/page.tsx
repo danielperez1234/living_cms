@@ -26,7 +26,7 @@ export default function Page({ params }: { params: { banner: string } }) {
   }
   return (
    <>
-    <AppNavBar title={params.banner.replace("_"," ")}/>
+    <AppNavBar title={params.banner.replaceAll("_"," ")}/>
     <BannerTable banners={banners} location={params.banner}/>
     
    </>

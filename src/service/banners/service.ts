@@ -15,12 +15,25 @@ export  async function GetBannersLocation(location:string):Promise<Response<Bann
     error: `${err}`
   };;
 }}
+export  async function DeleteBanner(id:string):Promise<Response<Banner[]>>{
+  
+  try{
+  return await request({
+    method:"DELETE",
+    endpoint:`/api/Assets/${id}`,
+    
+  })
+}catch(err){
+  return  {
+    status: 500,
+    error: `${err}`
+  };;
+}}
 export  async function PostBannersLocation(banner:BannerPost){
   
   try{
     const formData = new FormData();
     Object.keys(banner).forEach(key => {if(banner[key as keyof BannerPost] != null)formData.append(key, banner[key as keyof BannerPost]! )})
-    console.log(banner.AssetFile?.size)
   return await request<Banner>({
     method:"POST",
     endpoint:`/api/Assets/upload-asset`,

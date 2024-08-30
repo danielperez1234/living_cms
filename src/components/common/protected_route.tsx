@@ -7,7 +7,6 @@ import { useEffect } from "react";
 export default function ProtectedRoute(){
   const router = useRouter();
   useEffect(()=>{
-    console.log(localStorage.getItem(storageKeys.token))
     if(localStorage.getItem(storageKeys.token) == null){
         router.replace('/');
     }

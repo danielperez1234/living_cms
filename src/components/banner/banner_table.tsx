@@ -10,7 +10,8 @@ import {
   Paper,
   TextField,
   Box,
-  Fab
+  Fab,
+  Button
 } from "@mui/material";
 import Link from "next/link";
 //Icons
@@ -18,16 +19,28 @@ import AddIcon from "@mui/icons-material/Add";
 import SimplePagination from "../common/paginado";
 import { Banner } from "@/service/banners/interface";
 import ImageIcon from "@mui/icons-material/Image";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AgregarBannerModal from "./add_banner";
 import useBannerStore from "@/service/banners/store";
+import BannerImageModal from "./banner_image";
 
-const BannerTable = ({ banners,location }: { banners: Banner[],location:string }) => {
+const BannerTable = ({
+  banners,
+  location
+}: {
+  banners: Banner[];
+  location: string;
+}) => {
   // zustandHooks
-  const postBanner = useBannerStore(state=>state.addBanner);
-  
+  const postBanner = useBannerStore((state) => state.addBanner);
+  const deleteBanner = useBannerStore((state) => state.deleteBanner);
+  const getBanners = useBannerStore((state) => state.getBanners);
+
   //local hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [imageModal, setImageModal] = useState('');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -42,9 +55,16 @@ const BannerTable = ({ banners,location }: { banners: Banner[],location:string }
   };
   return (
     <Box>
-      <AgregarBannerModal open={openAddModal} onClose={()=>setOpenAddModal(false)} onSubmit={(asset =>{
-        postBanner({Location: location,...asset});
-        })}/>
+      <AgregarBannerModal
+      accept= {location=="mega_banner"? "image/*,video/*": "image/*"}
+        open={openAddModal}
+        onClose={() => setOpenAddModal(false)}
+        onSubmit={async (asset) => {
+          await postBanner({ Location: location, ...asset });
+          getBanners(location);
+        }}
+      />
+      <BannerImageModal open={openImageModal} onClose={()=>setOpenImageModal(false)} file={imageModal}/>
       <Box
         display={"flex"}
         width={"96%"}
@@ -52,7 +72,12 @@ const BannerTable = ({ banners,location }: { banners: Banner[],location:string }
         justifyContent={"end"}
         bottom={100}
       >
-        <Fab variant="extended" color="primary" aria-label="add" onClick={()=>setOpenAddModal(true)}>
+        <Fab
+          variant="extended"
+          color="primary"
+          aria-label="add"
+          onClick={() => setOpenAddModal(true)}
+        >
           <AddIcon sx={{ mr: 1 }} />
           Agregar
         </Fab>
@@ -71,7 +96,9 @@ const BannerTable = ({ banners,location }: { banners: Banner[],location:string }
           <TableHead>
             <TableRow>
               <TableCell>Título</TableCell>
-              <TableCell>Imagen</TableCell>
+              <TableCell>Descripción</TableCell>
+              <TableCell>Link</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -81,12 +108,36 @@ const BannerTable = ({ banners,location }: { banners: Banner[],location:string }
                 onClick={() => handleClick(banner)}
                 style={{ cursor: "pointer" }}
               >
-                <TableCell>{banner.assetName ?? "no name"}</TableCell>
+                <TableCell>{banner.assetName ?? "Sin nombre"}</TableCell>
                 <TableCell>
-                  <Link href={`${banner.assetUrl}`}>
-                    <ImageIcon />
-                  </Link>
+                  {banner.assetDescription ?? "Sin descripcion"}
                 </TableCell>
+                <TableCell>
+                  {
+                  banner.link && banner.link != "" ?
+                   (<Link href={""}>{banner.link}</Link>) : "no link"}
+                </TableCell>
+                <TableCell>
+                <Button
+                    variant="text"
+                    onClick={ () => {
+                    setImageModal(banner.assetUrl ?? '');
+                    setOpenImageModal(true);
+                    }}
+                  >
+                    <ImageIcon />
+                  </Button>
+                  <Button
+                    variant="text"
+                    onClick={async () => {
+                      await deleteBanner(banner.id);
+                      getBanners(location);
+                    }}
+                  >
+                    <DeleteIcon color="error" />
+                  </Button>
+                </TableCell>
+                
               </TableRow>
             ))}
           </TableBody>

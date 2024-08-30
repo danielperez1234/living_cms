@@ -20,7 +20,9 @@ export default function AppDrawer({drawerOpen,setDrawerOpen}:PropsAppDrawer){
           <NavBarTextButton icon={<LocalOfferIcon/>} title={"Servicios"} onClick={() => {}} />
           <NavBarTextButton icon={<LocalOfferIcon/>} title={"Quiénes Somos"} onClick={() => {}} />
           <Divider/>
-          <NavBarTextButton icon={<LogoutIcon/>} title={"Cerrar sesión"} onClick={() => router.replace('/')} />
+          <NavBarTextButton icon={<LogoutIcon/>} title={"Cerrar sesión"} onClick={() =>{
+            localStorage.clear();
+            router.replace('/');}} />
         </List>
         </Box>
       </Drawer>
