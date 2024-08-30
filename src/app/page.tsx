@@ -30,7 +30,7 @@ export default function Home() {
           objectPosition="center"
           objectFit="contain"
           fill
-          src="/web/marca/logo.png"
+          src="/cms/marca/logo.png"
           alt="logo Living"
         />
       </Box>
