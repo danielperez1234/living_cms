@@ -17,7 +17,7 @@ export interface Response<T> {
   error?: string; // Opcional, por si deseas manejar errores
 }
 
-const mainRoute = "http://64.23.178.44";
+const mainRoute = "https://livingpapeleria.com";
 
 export async function request<T>({
   method,

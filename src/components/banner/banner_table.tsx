@@ -115,7 +115,7 @@ const BannerTable = ({
                 <TableCell>
                   {
                   banner.link && banner.link != "" ?
-                   (<Link href={""}>{banner.link}</Link>) : "no link"}
+                   (<Link href={banner.link}>{banner.link}</Link>) : "no link"}
                 </TableCell>
                 <TableCell>
                 <Button
