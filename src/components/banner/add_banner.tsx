@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Modal,
   Box,
@@ -6,14 +6,14 @@ import {
   Button,
   Typography,
   Backdrop,
-  Fade,
-} from '@mui/material';
+  Fade
+} from "@mui/material";
 
 interface AddAssetModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: AssetFormData) => void;
-  accept:string;
+  accept: string;
 }
 
 interface AssetFormData {
@@ -23,11 +23,16 @@ interface AssetFormData {
   link: string;
 }
 
-const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSubmit,accept }) => {
+const AgregarBannerModal: React.FC<AddAssetModalProps> = ({
+  open,
+  onClose,
+  onSubmit,
+  accept
+}) => {
   const [file, setFile] = useState<File | null>(null);
-  const [assetName, setAssetName] = useState<string>('');
-  const [assetDescription, setAssetDescription] = useState<string>('');
-  const [link, setLink] = useState<string>('');
+  const [assetName, setAssetName] = useState<string>("");
+  const [assetDescription, setAssetDescription] = useState<string>("");
+  const [link, setLink] = useState<string>("");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -36,8 +41,15 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
   };
 
   const handleSubmit = () => {
-    onSubmit({ AssetFile: file, AssetName: assetName, AssetDescription: assetDescription,link:link });
-    onClose(); // Close the modal after submitting
+    if (file && assetName != "" && assetDescription != "") {
+      onSubmit({
+        AssetFile: file,
+        AssetName: assetName,
+        AssetDescription: assetDescription,
+        link: link
+      });
+      onClose(); // Close the modal after submitting
+    }
   };
 
   return (
@@ -45,23 +57,25 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
       open={open}
       onClose={onClose}
       closeAfterTransition
-      slots={{backdrop: Backdrop}}
-      slotProps={{backdrop:{
-        timeout: 500,
-      }}}
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500
+        }
+      }}
     >
       <Fade in={open}>
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
+            bgcolor: "background.paper",
+            border: "2px solid #000",
             boxShadow: 24,
-            p: 4,
+            p: 4
           }}
         >
           <Typography variant="h6" component="h2">
@@ -77,7 +91,6 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
             inputProps={{
               maxLength: 30
             }}
-            
           />
           <TextField
             fullWidth
@@ -87,7 +100,6 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
             margin="normal"
             variant="outlined"
             multiline
-            
             inputProps={{
               maxLength: 100
             }}
@@ -103,7 +115,6 @@ const AgregarBannerModal: React.FC<AddAssetModalProps> = ({ open, onClose, onSub
             inputProps={{
               maxLength: 200
             }}
-            
           />
           <Button
             variant="contained"

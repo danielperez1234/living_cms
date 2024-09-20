@@ -1,31 +1,50 @@
 'use client'
-import BannerTable from "@/components/banner/banner_table";
-import AppNavBar from "@/components/common/app_nav_bar/main";
-import useBannerStore from "@/service/banners/store";
-import { Backdrop, CircularProgress } from "@mui/material";
-import { useEffect } from "react";
+import React, { useEffect } from 'react';
+import { Box, Grid, Card, CardActionArea, CardContent, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import AppNavBar from '@/components/common/app_nav_bar/main';
+import useBannerStore from '@/service/banners/store';
+const banners = [
+  { id: 1, title: 'Ofertas', route: '/ofertas/ofertas' },
+  { id: 2, title: 'Square banner ofertas', route: '/ofertas/square_banner_ofertas' },
+  { id: 3, title: 'Quarter one banner', route: '/ofertas/quarter_one_banner' },
+  { id: 4, title: 'Quarter two banner', route: '/banners/quarter_two_banner' },
+  // Agrega más tipos de banners según sea necesario
+];
 
-export default function Page() {
-  const banners = useBannerStore(state => state.banners);
-  const loading = useBannerStore(state => state.loading);
-  const getBanners = useBannerStore(state => state.getBanners);
-  const clean = useBannerStore(state => state.clean);
+const BannersList = () => {
+  //zustand Hooks
+  const cleanBanners = useBannerStore(state=>state.clean);
+  const router = useRouter();
+
+  const handleRedirect = (route: string) => {
+    router.push(route);
+  };
   useEffect(()=>{
-    getBanners("ofertas");
+cleanBanners();
   },[])
-  if(loading){
-    return(<Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={loading}
-    >
-      <CircularProgress color="primary" />
-    </Backdrop>)
-  }
   return (
-   <>
-    <AppNavBar title={"Ofertas"}/>
-    <BannerTable banners={banners} location={'ofertas'}/>
-    
-   </>
+    <>
+    <AppNavBar title='Ofertas' />
+    <Box display={'flex'} justifyContent={'center'} sx={{ padding: 2 }}>
+      <Grid container spacing={2} maxWidth={"1000px"}>
+        {banners.map((banner) => (
+          <Grid item xs={12} sm={6} md={4} key={banner.id}>
+            <Card>
+              <CardActionArea onClick={() => handleRedirect(banner.route)}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {banner.title}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+    </>
   );
-}
+};
+
+export default BannersList;

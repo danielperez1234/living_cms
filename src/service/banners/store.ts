@@ -22,6 +22,7 @@ const useBannerStore= create<BannerState>()((set) => ({
       loading: true
     }));
     const response = await GetBannersLocation(location);
+    console.log(response)
     if (response.status < 300 && response.data) {
       set((state) => {
         return {
