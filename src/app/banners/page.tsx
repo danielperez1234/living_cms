@@ -9,6 +9,7 @@ const banners = [
   { id: 2, title: 'Flat banner', route: '/banners/flat_banner' },
   { id: 3, title: 'Square one banner', route: '/banners/square_one_banner' },
   { id: 4, title: 'Square two banner', route: '/banners/square_two_banner' },
+  { id: 5, title: 'Sandbox Catalogo', route: '/banners/sandbox_catalogo' },
   // Agrega más tipos de banners según sea necesario
 ];
 
