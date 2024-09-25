@@ -118,6 +118,9 @@ const SucursalTable = ({ sucursales: banners }: { sucursales: Sucursal[] }) => {
                     : "Sin horario"}
                 </TableCell>
                 <TableCell>
+                  {sucursal.phoneNumber}
+                </TableCell>
+                <TableCell>
                   {sucursal.latitude + "/" + sucursal.longitude}
                 </TableCell>
                 <TableCell>
