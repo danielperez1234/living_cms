@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
+import { LocationOn } from "@mui/icons-material";
 interface PropsAppDrawer{
 drawerOpen: boolean;
 setDrawerOpen:  (x:boolean)=> void,
@@ -17,7 +18,7 @@ export default function AppDrawer({drawerOpen,setDrawerOpen}:PropsAppDrawer){
         <List >
           <NavBarTextButton icon={<ViewCarouselIcon/>} title={"Banners"} onClick={() => router.push('/banners')} />
           <NavBarTextButton icon={<LocalOfferIcon/>} title={"Ofertas"} onClick={() => router.push('/ofertas')} />
-          <NavBarTextButton icon={<LocalOfferIcon/>} title={"Servicios"} onClick={() => {}} />
+          <NavBarTextButton icon={<LocationOn/>} title={"Sucursales"} onClick={() => router.push('/sucursales')} />
           <NavBarTextButton icon={<LocalOfferIcon/>} title={"Quiénes Somos"} onClick={() => {}} />
           <Divider/>
           <NavBarTextButton icon={<LogoutIcon/>} title={"Cerrar sesión"} onClick={() =>{
