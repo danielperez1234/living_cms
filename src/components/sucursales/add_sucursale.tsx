@@ -37,8 +37,8 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
   const [description, setAssetDescription] = useState<string>("");
   const [schedule, setSchedule] = useState<string>("");
   const [phoneNumber, setphoneNumber] = useState<string>("");
-  const [latitude, setlatitude] = useState<number>(0);
-  const [longitude, setlongitude] = useState<number>(0);
+  const [latitude, setlatitude] = useState<string>("0");
+  const [longitude, setlongitude] = useState<string>("0");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -53,8 +53,8 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
       description != "" &&
       schedule != "" &&
       phoneNumber != "" &&
-      latitude != 0 &&
-      longitude != 0
+      latitude != "0" &&
+      longitude != "0"
     ) {
       onSubmit({
         image: image,
@@ -62,8 +62,8 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
         schedule: schedule,
         description: description,
         phoneNumber: phoneNumber,
-        latitude: latitude,
-        longitude: longitude
+        latitude: Number.parseFloat(latitude),
+        longitude: Number.parseFloat(longitude)
       });
       onClose(); // Close the modal after submitting
     }
@@ -150,11 +150,8 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             fullWidth
             label="Latitud"
             value={latitude}
-            onBlur={(e) => {
-              
-              const newLat = Number.parseFloat(e.target.value) ?? 0;
-              setlatitude(newLat ?? 0);
-            }}
+            
+            onChange={e=>setlongitude(e.target.value)}
             margin="normal"
             variant="outlined"
             type="number"
@@ -166,11 +163,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             fullWidth
             label="Longitud"
             value={longitude}
-            onBlur={(e) => {
-              
-              const newLong = Number.parseFloat(e.target.value) ?? 0;
-              setlongitude(newLong ?? 0);
-            }}
+            onChange={e=>setlongitude(e.target.value)}
           
             margin="normal"
             variant="outlined"
