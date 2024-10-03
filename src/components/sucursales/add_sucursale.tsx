@@ -152,14 +152,15 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             value={latitude}
             onChange={(e) => {
               if(e.target.value == '-') return;
-              if(e.target.value == '0'){
+              if(e.target.value == ''){
                 setlatitude(0);
               }
               const newLat = Number.parseFloat(e.target.value) ?? 0;
-              setlatitude(newLat);
+              setlatitude(newLat ?? 0);
             }}
             margin="normal"
             variant="outlined"
+            type="number"
             inputProps={{
               maxLength: 200
             }}
@@ -170,16 +171,17 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             value={longitude}
             onChange={(e) => {
               if(e.target.value == '-') return;
-              if(e.target.value == '0'){
+              if(e.target.value == ''){
                 setlongitude(0);
               }
               const newLong = Number.parseFloat(e.target.value) ?? 0;
-              setlongitude(newLong);
+              setlongitude(newLong ?? 0);
             }}
             margin="normal"
             variant="outlined"
+            type="number"
             inputProps={{
-              maxLength: 200
+              maxLength: 200,
             }}
           />
           <Button
