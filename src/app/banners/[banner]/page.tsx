@@ -6,6 +6,7 @@ import { storageKeys } from "@/const/storage_keys";
 import useBannerStore from "@/service/banners/store";
 import { Backdrop, CircularProgress } from "@mui/material";
 import Image from "next/image";
+import React from "react";
 import { useEffect } from "react";
 
 export default function Page({ params }: { params: { banner: string } }) {
@@ -28,7 +29,6 @@ export default function Page({ params }: { params: { banner: string } }) {
    <>
     <AppNavBar title={params.banner.replaceAll("_"," ")}/>
     <BannerTable banners={banners} location={params.banner}/>
-    
    </>
   );
 }
