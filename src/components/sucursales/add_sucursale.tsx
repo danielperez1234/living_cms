@@ -96,7 +96,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
           }}
         >
           <Typography variant="h6" component="h2">
-            Agregar banner
+            Agregar sucursal
           </Typography>
           <TextField
             fullWidth
@@ -151,7 +151,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             label="Latitud"
             value={latitude}
             
-            onChange={e=>setlongitude(e.target.value)}
+            onChange={e=>setlatitude(e.target.value)}
             margin="normal"
             variant="outlined"
             type="number"
