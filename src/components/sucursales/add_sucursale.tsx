@@ -6,7 +6,7 @@ import {
   Button,
   Typography,
   Backdrop,
-  Fade
+  Fade,
 } from "@mui/material";
 
 interface addSucursalModalProps {
@@ -30,7 +30,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
   open,
   onClose,
   onSubmit,
-  accept
+  accept,
 }) => {
   const [image, setImage] = useState<File | null>(null);
   const [name, setAssetName] = useState<string>("");
@@ -45,7 +45,15 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
       setImage(event.target.files[0]);
     }
   };
-
+  const resetinitState = () => {
+    setImage(null);
+    setAssetName("");
+    setAssetDescription("");
+    setSchedule("");
+    setphoneNumber("");
+    setlatitude("0");
+    setlongitude("0");
+  };
   const handleSubmit = () => {
     if (
       image &&
@@ -63,8 +71,9 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
         description: description,
         phoneNumber: phoneNumber,
         latitude: Number.parseFloat(latitude),
-        longitude: Number.parseFloat(longitude)
+        longitude: Number.parseFloat(longitude),
       });
+      resetinitState();
       onClose(); // Close the modal after submitting
     }
   };
@@ -72,13 +81,16 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        resetinitState();
+        onClose();
+      }}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{
         backdrop: {
-          timeout: 500
-        }
+          timeout: 500,
+        },
       }}
     >
       <Fade in={open}>
@@ -92,7 +104,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             bgcolor: "background.paper",
             border: "2px solid #000",
             boxShadow: 24,
-            p: 4
+            p: 4,
           }}
         >
           <Typography variant="h6" component="h2">
@@ -106,7 +118,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             margin="normal"
             variant="outlined"
             inputProps={{
-              maxLength: 30
+              maxLength: 30,
             }}
           />
           <TextField
@@ -118,7 +130,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             variant="outlined"
             multiline
             inputProps={{
-              maxLength: 100
+              maxLength: 100,
             }}
             rows={4}
           />
@@ -131,7 +143,7 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             variant="outlined"
             multiline
             inputProps={{
-              maxLength: 100
+              maxLength: 100,
             }}
             rows={4}
           />
@@ -143,28 +155,26 @@ const AgregarSucursalBanner: React.FC<addSucursalModalProps> = ({
             margin="normal"
             variant="outlined"
             inputProps={{
-              maxLength: 200
+              maxLength: 200,
             }}
           />
           <TextField
             fullWidth
             label="Latitud"
             value={latitude}
-            
-            onChange={e=>setlatitude(e.target.value)}
+            onChange={(e) => setlatitude(e.target.value)}
             margin="normal"
             variant="outlined"
             type="number"
             inputProps={{
-              maxLength: 200
+              maxLength: 200,
             }}
           />
           <TextField
             fullWidth
             label="Longitud"
             value={longitude}
-            onChange={e=>setlongitude(e.target.value)}
-          
+            onChange={(e) => setlongitude(e.target.value)}
             margin="normal"
             variant="outlined"
             type="number"
