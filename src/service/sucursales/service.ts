@@ -2,6 +2,7 @@ import { storageKeys } from "@/const/storage_keys";
 import { Response, request } from "../service";
 import "../service";
 import { Sucursal, SucursalPost } from "./interface";
+
 export async function GetSucursales(): Promise<Response<Sucursal[]>> {
   try {
     var token = localStorage.getItem(storageKeys.token);
