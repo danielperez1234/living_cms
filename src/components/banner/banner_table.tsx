@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 //Icons
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from '@mui/icons-material/Edit';
 import SimplePagination from "../common/paginado";
 import { Banner } from "@/service/banners/interface";
 import ImageIcon from "@mui/icons-material/Image";
@@ -23,6 +24,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AgregarBannerModal from "./add_banner";
 import useBannerStore from "@/service/banners/store";
 import BannerImageModal from "./banner_image";
+import UpdateBannerModal from "./update_banner";
+import { UpdateBannersLocation } from "@/service/banners/service";
 
 const BannerTable = ({
   banners,
@@ -35,12 +38,14 @@ const BannerTable = ({
   const postBanner = useBannerStore((state) => state.addBanner);
   const deleteBanner = useBannerStore((state) => state.deleteBanner);
   const getBanners = useBannerStore((state) => state.getBanners);
+  const selectBanner = useBannerStore((state) => state.selectBanner);
 
   //local hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
   const [imageModal, setImageModal] = useState('');
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -61,6 +66,16 @@ const BannerTable = ({
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (asset) => {
           await postBanner({ Location: location, ...asset });
+          getBanners(location);
+        }}
+      />
+      <UpdateBannerModal
+        open={openUpdateModal}
+        onClose={() => setOpenUpdateModal(false)}
+        onSubmit={async (asset) => {
+          if(asset){
+          await UpdateBannersLocation({  ...asset });
+        }
           getBanners(location);
         }}
       />
@@ -126,6 +141,15 @@ const BannerTable = ({
                     }}
                   >
                     <ImageIcon />
+                  </Button>
+                <Button
+                    variant="text"
+                    onClick={ () => {
+                    selectBanner(banner);
+                    setOpenUpdateModal(true);
+                    }}
+                  >
+                    <EditIcon />
                   </Button>
                   <Button
                     variant="text"

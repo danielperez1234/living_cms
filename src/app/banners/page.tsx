@@ -18,6 +18,7 @@ const banners = [
   { id: 4, title: "Square two banner", route: "/banners/square_two_banner" },
   { id: 5, title: "Sandbox Catalogo", route: "/banners/sandbox_catalogo" },
   { id: 6, title: "Quienes somos", route: "/banners/quienes_somos" },
+  { id: 7, title: "Fondo web", route: "/banners/fondo_web" }
   // Agrega más tipos de banners según sea necesario
 ];
 
