@@ -37,7 +37,9 @@ export default function AppDrawer({
           <NavBarTextButton
             icon={<LocalOfferIcon />}
             title={"Quiénes Somos"}
-            onClick={() => {}}
+            onClick={() => {
+              router.push("/banners/quienes_somos")
+            }}
           />
           <NavBarTextButton
             icon={<LocalLibraryRounded />}

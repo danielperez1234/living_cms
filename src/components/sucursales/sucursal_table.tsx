@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 //Icons
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from '@mui/icons-material/Edit';
 import SimplePagination from "../common/paginado";
 import ImageIcon from "@mui/icons-material/Image";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,16 +23,20 @@ import { Sucursal } from "@/service/sucursales/interface";
 import useSucursalesStore from "@/service/sucursales/store";
 import AgregarSucursalBanner from "./add_sucursale";
 import SucursalImageModal from "./sucursal_image";
+import UpdateSucursalesBanner from "./update_sucursales";
+import { updateSucursal } from "@/service/sucursales/service";
 
 const SucursalTable = ({ sucursales: banners }: { sucursales: Sucursal[] }) => {
   // zustandHooks
   const postSucursal = useSucursalesStore((state) => state.addSucursal);
   const deleteSucursal = useSucursalesStore((state) => state.deleteSucursal);
   const getSucursal = useSucursalesStore((state) => state.getSucursales);
+  const selectSucursal = useSucursalesStore((state) => state.selectSucursal);
 
   //local hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
   const [imageModal, setImageModal] = useState("");
 
@@ -54,6 +59,15 @@ const SucursalTable = ({ sucursales: banners }: { sucursales: Sucursal[] }) => {
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (asset) => {
           await postSucursal({ ...asset });
+          getSucursal();
+        }}
+      />
+      <UpdateSucursalesBanner
+        accept={"image/*"}
+        open={openUpdateModal}
+        onClose={() => setOpenUpdateModal(false)}
+        onSubmit={async (sucursal, image) => {
+          await updateSucursal(sucursal, image);
           getSucursal();
         }}
       />
@@ -131,6 +145,15 @@ const SucursalTable = ({ sucursales: banners }: { sucursales: Sucursal[] }) => {
                     }}
                   >
                     <ImageIcon />
+                  </Button>
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      selectSucursal(sucursal);
+                      setOpenUpdateModal(true);
+                    }}
+                  >
+                    <EditIcon />
                   </Button>
                   <Button
                     variant="text"

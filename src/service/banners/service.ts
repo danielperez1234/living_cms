@@ -30,7 +30,6 @@ export  async function DeleteBanner(id:string):Promise<Response<Banner[]>>{
   };;
 }}
 export  async function PostBannersLocation(banner:BannerPost){
-  
   try{
     const formData = new FormData();
     Object.keys(banner).forEach(key => {if(banner[key as keyof BannerPost] != null)formData.append(key, banner[key as keyof BannerPost]! )})
@@ -40,6 +39,19 @@ export  async function PostBannersLocation(banner:BannerPost){
     headers:{
       "Content-Type": `multipart/form-data;`,},
     formData: formData
+  })
+}catch(err){
+  return  {
+    status: 500,
+    error: `${err}`
+  };;
+}}
+export  async function UpdateBannersLocation(banner:Banner){
+  try{
+  return await request<Banner>({
+    method:"PUT",
+    endpoint:`/api/Assets/${banner.id}`,
+    body:banner
   })
 }catch(err){
   return  {

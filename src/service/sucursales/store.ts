@@ -4,11 +4,14 @@ import { DeleteSucursal, GetSucursales, PostSucursal } from "./service";
 
 interface SucursalState {
   sucursales: Sucursal[];
+  selectedSucursal? : Sucursal;
   errorMsg: string | undefined;
   loading: boolean;
+
   getSucursales: () => void;
   addSucursal: (sucursal: SucursalPost) => Promise<void>;
   deleteSucursal: (id: string) => Promise<void>;
+  selectSucursal: (sucursal: Sucursal)=>void;
   clean: () => void;
 }
 
@@ -40,6 +43,12 @@ const useSucursalesStore= create<SucursalState>()((set) => ({
         loading: false
       };
     });
+  },
+  selectSucursal:(sucursal)=>{
+    set((state)=>({
+      ...state,
+      selectedSucursal : sucursal
+    }))
   },
   clean: () => set((state) => ({ sucursales: [] })),
   addSucursal: async (banner) => {
