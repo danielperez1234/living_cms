@@ -6,9 +6,11 @@ interface BannerState {
   banners: Banner[];
   errorMsg: string | undefined;
   loading: boolean;
+  selectedBanner?: Banner;
   getBanners: (location: string) => void;
   addBanner: (banner: BannerPost) => Promise<void>;
   deleteBanner: (id: string) => Promise<void>;
+  selectBanner: (banner: Banner) => void;
   clean: () => void;
 }
 
@@ -41,6 +43,10 @@ const useBannerStore= create<BannerState>()((set) => ({
       };
     });
   },
+  selectBanner:(banner)=>{
+    set(state=> ({...state, selectedBanner:banner}));
+  },
+
   clean: () => set((state) => ({ banners: [] })),
   addBanner: async (banner) => {
     set((state=>({...state,loading:true})));

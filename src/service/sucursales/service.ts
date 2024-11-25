@@ -68,6 +68,37 @@ export async function PostSucursal(sucurusal: SucursalPost) {
     };
   }
 }
+export async function updateSucursal(sucurusal: Sucursal, image: File | undefined) {
+  try {
+    var token = localStorage.getItem(storageKeys.token);
+    const formData = new FormData();
+    Object.keys(sucurusal).forEach((key) => {
+      if (sucurusal[key as keyof SucursalPost] != null) {
+        var valueToAppend = sucurusal[key as keyof SucursalPost];
+        if (typeof valueToAppend == "number") {
+          valueToAppend = valueToAppend.toString();
+        }
+        formData.append(key, valueToAppend ?? "");
+      }
+    });
+    
+    formData.append("Image", image ?? '');
+    return await request<Sucursal>({
+      method: "PUT",
+      endpoint: `/api/Branches/${sucurusal.id}`,
+      headers: {
+        "Content-Type": `multipart/form-data;`,
+        "authorization": `bearer ${token}`
+      },
+      formData: formData
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}
 // const formData = new FormData();
 //     Object.keys(banner).forEach(key => {if(banner[key as keyof BannerPost] != null)formData.append(key, banner[key as keyof BannerPost]! )})
 //     console.log(banner.AssetFile?.size)
