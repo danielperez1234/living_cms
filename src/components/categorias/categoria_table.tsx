@@ -12,20 +12,22 @@ import {
   Box,
 } from "@mui/material";
 //Icons
-import AddIcon from "@mui/icons-material/Add";
 import SimplePagination from "../common/paginado";
-import ImageIcon from "@mui/icons-material/Image";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Categoria } from "@/service/categorias/interface";
 import useCategoriasStore from "@/service/categorias/store";
+import { useRouter } from "next/navigation";
 
 const CategoriaTable = ({
   categorias: banners,
 }: {
   categorias: Categoria[];
 }) => {
+  // Router
+  const router = useRouter();
+
   // zustandHooks
   const getCategoria = useCategoriasStore((state) => state.getCategorias);
+  const selectCategoria = useCategoriasStore((state) => state.selectCategoria);
 
   // local hooks
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -35,9 +37,6 @@ const CategoriaTable = ({
   const filteredBanners = banners.filter((categoria) =>
     categoria.categoryName?.toLowerCase().includes(searchTerm)
   );
-  const handleClick = (categoria: Categoria) => {
-    console.log(`Banner clickeadi: ${categoria.categoryName}`);
-  };
 
   return (
     <Box>
@@ -53,7 +52,7 @@ const CategoriaTable = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Título</TableCell>
+              <TableCell>Categorías</TableCell>
               <TableCell>ID</TableCell>
             </TableRow>
           </TableHead>
@@ -61,7 +60,10 @@ const CategoriaTable = ({
             {filteredBanners.map((categoria) => (
               <TableRow
                 key={categoria.id}
-                onClick={() => handleClick(categoria)}
+                onClick={() => {
+                  selectCategoria(categoria);
+                  router.push(`/categorias/${categoria.id}`);
+                }}
                 style={{ cursor: "pointer" }}
               >
                 <TableCell>{categoria.categoryName ?? "Sin nombre"}</TableCell>

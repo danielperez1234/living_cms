@@ -1,5 +1,3 @@
-import AppNavBar from "@/components/common/app_nav_bar/main";
-import AppTheme from "@/components/common/app_theme";
 import ProtectedRoute from "@/components/common/protected_route";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -17,11 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
-      < >
-        <ProtectedRoute/>
-          {children}
-      </>
-    
+    <>
+      <ProtectedRoute />
+      {children}
+    </>
   );
 }
