@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { Categoria } from "./interface";
-import { GetCategorias } from "./service";
+import {
+  DeleteCategoria,
+  GetCategorias,
+  PostCategoria,
+  UpdateCategoria,
+} from "./service";
 import { GetSubcategorias } from "../subcategorias/service";
 
 interface CategoriaState {
@@ -11,6 +16,9 @@ interface CategoriaState {
   selectCategoria: (categoria: Categoria) => void;
   getCategorias: () => void;
   getSubcategorias: (idCategoria: string) => void;
+  deleteCategoria: (id: string) => Promise<void>;
+  addCategoria: (categoria: string) => Promise<void>;
+  updateCategoria: (categoria: Categoria) => Promise<void>;
   clean: () => void;
 }
 
@@ -71,6 +79,24 @@ const useCategoriasStore = create<CategoriaState>()((set) => ({
         loading: false,
       };
     });
+  },
+  deleteCategoria: async (id) => {
+    set((state) => ({ ...state, loading: true }));
+    await DeleteCategoria(id);
+    set((state) => ({ ...state, loading: false }));
+    return;
+  },
+  addCategoria: async (categoria) => {
+    set((state) => ({ ...state, loading: true }));
+    await PostCategoria(categoria);
+    set((state) => ({ ...state, loading: false }));
+    return;
+  },
+  updateCategoria: async (categoria) => {
+    set((state) => ({ ...state, loading: true }));
+    await UpdateCategoria(categoria);
+    set((state) => ({ ...state, loading: false }));
+    return;
   },
   clean: () => set((state) => ({ categorias: [] })),
 }));

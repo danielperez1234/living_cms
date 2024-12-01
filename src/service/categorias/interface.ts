@@ -9,3 +9,14 @@ export interface Subcategoria {
   categoryId: string;
   name: string;
 }
+
+export interface CategoriaPost {
+  name: string;
+  subcategories: Subcategoria[];
+}
+
+export interface categoriaPut {
+  id: string;
+  name: string;
+  subcategories: Subcategoria[];
+}

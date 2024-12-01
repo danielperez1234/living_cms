@@ -11,12 +11,12 @@ import {
   TextField,
   Box,
   Fab,
-  Button
+  Button,
 } from "@mui/material";
 import Link from "next/link";
 //Icons
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import SimplePagination from "../common/paginado";
 import { Banner } from "@/service/banners/interface";
 import ImageIcon from "@mui/icons-material/Image";
@@ -29,7 +29,7 @@ import { UpdateBannersLocation } from "@/service/banners/service";
 
 const BannerTable = ({
   banners,
-  location
+  location,
 }: {
   banners: Banner[];
   location: string;
@@ -44,7 +44,7 @@ const BannerTable = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
-  const [imageModal, setImageModal] = useState('');
+  const [imageModal, setImageModal] = useState("");
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +61,7 @@ const BannerTable = ({
   return (
     <Box>
       <AgregarBannerModal
-      accept= {location=="mega_banner"? "image/*,video/*": "image/*"}
+        accept={location == "mega_banner" ? "image/*,video/*" : "image/*"}
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (asset) => {
@@ -73,13 +73,17 @@ const BannerTable = ({
         open={openUpdateModal}
         onClose={() => setOpenUpdateModal(false)}
         onSubmit={async (asset) => {
-          if(asset){
-          await UpdateBannersLocation({  ...asset });
-        }
+          if (asset) {
+            await UpdateBannersLocation({ ...asset });
+          }
           getBanners(location);
         }}
       />
-      <BannerImageModal open={openImageModal} onClose={()=>setOpenImageModal(false)} file={imageModal}/>
+      <BannerImageModal
+        open={openImageModal}
+        onClose={() => setOpenImageModal(false)}
+        file={imageModal}
+      />
       <Box
         display={"flex"}
         width={"96%"}
@@ -128,25 +132,27 @@ const BannerTable = ({
                   {banner.assetDescription ?? "Sin descripcion"}
                 </TableCell>
                 <TableCell>
-                  {
-                  banner.link && banner.link != "" ?
-                   (<Link href={banner.link}>{banner.link}</Link>) : "no link"}
+                  {banner.link && banner.link != "" ? (
+                    <Link href={banner.link}>{banner.link}</Link>
+                  ) : (
+                    "no link"
+                  )}
                 </TableCell>
                 <TableCell>
-                <Button
+                  <Button
                     variant="text"
-                    onClick={ () => {
-                    setImageModal(banner.assetUrl ?? '');
-                    setOpenImageModal(true);
+                    onClick={() => {
+                      setImageModal(banner.assetUrl ?? "");
+                      setOpenImageModal(true);
                     }}
                   >
                     <ImageIcon />
                   </Button>
-                <Button
+                  <Button
                     variant="text"
-                    onClick={ () => {
-                    selectBanner(banner);
-                    setOpenUpdateModal(true);
+                    onClick={() => {
+                      selectBanner(banner);
+                      setOpenUpdateModal(true);
                     }}
                   >
                     <EditIcon />
@@ -161,7 +167,6 @@ const BannerTable = ({
                     <DeleteIcon color="error" />
                   </Button>
                 </TableCell>
-                
               </TableRow>
             ))}
           </TableBody>

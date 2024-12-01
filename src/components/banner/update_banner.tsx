@@ -6,7 +6,7 @@ import {
   Button,
   Typography,
   Backdrop,
-  Fade
+  Fade,
 } from "@mui/material";
 import { Banner } from "@/service/banners/interface";
 import useBannerStore from "@/service/banners/store";
@@ -20,7 +20,7 @@ interface PutAssetModalProps {
 const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
   open,
   onClose,
-  onSubmit
+  onSubmit,
 }) => {
   const selectedBanner = useBannerStore((state) => state.selectedBanner);
   const selectBanner = useBannerStore((state) => state.selectBanner);
@@ -43,8 +43,8 @@ const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
       slots={{ backdrop: Backdrop }}
       slotProps={{
         backdrop: {
-          timeout: 500
-        }
+          timeout: 500,
+        },
       }}
     >
       <Fade in={open}>
@@ -58,11 +58,11 @@ const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
             bgcolor: "background.paper",
             border: "2px solid #000",
             boxShadow: 24,
-            p: 4
+            p: 4,
           }}
         >
           <Typography variant="h6" component="h2">
-            Agregar banner
+            Actualizar banner
           </Typography>
           <TextField
             fullWidth
@@ -76,7 +76,7 @@ const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
             margin="normal"
             variant="outlined"
             inputProps={{
-              maxLength: 30
+              maxLength: 30,
             }}
           />
           <TextField
@@ -85,14 +85,17 @@ const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
             value={selectedBanner?.assetDescription}
             onChange={(e) => {
               if (selectedBanner) {
-                selectBanner({ ...selectedBanner, assetDescription: e.target.value });
+                selectBanner({
+                  ...selectedBanner,
+                  assetDescription: e.target.value,
+                });
               }
             }}
             margin="normal"
             variant="outlined"
             multiline
             inputProps={{
-              maxLength: 100
+              maxLength: 100,
             }}
             rows={4}
           />
@@ -108,10 +111,10 @@ const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
             margin="normal"
             variant="outlined"
             inputProps={{
-              maxLength: 200
+              maxLength: 200,
             }}
           />
-          
+
           <Button
             variant="contained"
             color="primary"
@@ -119,7 +122,7 @@ const UpdateBannerModal: React.FC<PutAssetModalProps> = ({
             fullWidth
             sx={{ mt: 2 }}
           >
-            Agregar
+            Actualizar
           </Button>
         </Box>
       </Fade>
