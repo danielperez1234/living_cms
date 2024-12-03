@@ -43,7 +43,7 @@ export default function Page({
   return (
     <>
       <AppNavBar title={`${subcategorias.categoryName}`} />
-      <Typography variant="h1">Nigger</Typography>
+      <Typography variant="h1">on work</Typography>
     </>
   );
 }
