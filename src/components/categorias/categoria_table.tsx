@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import AgregarCategoriaModal from "./add_category";
 import UpdateCategoriaModal from "./update_categoria";
 import { UpdateCategoria } from "@/service/categorias/service";
+
 const CategoriaTable = ({
   categorias: banners,
 }: {

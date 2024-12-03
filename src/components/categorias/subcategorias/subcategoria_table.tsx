@@ -13,24 +13,47 @@ import {
   TextField,
 } from "@mui/material";
 import SimplePagination from "@/components/common/paginado";
-import { Subcategoria } from "@/service/subcategorias/interface";
+import { Subcategoria, Subcategory } from "@/service/subcategorias/interface";
+import { useRouter } from "next/navigation";
+import useSubcategoriasStore from "@/service/subcategorias/store";
 
 const SubcategoriaTable = ({
   subcategorias: banners,
 }: {
   subcategorias: Subcategoria;
 }) => {
+  // Router
+  const router = useRouter();
+
+  // Zustand Hooks
+  const { getSubcategoria, selectSubcategoria, subcategoria } =
+    useSubcategoriasStore((state) => ({
+      getSubcategoria: state.getSubcategoria,
+      selectSubcategoria: state.selectSubcategoria,
+      subcategoria: state.subcategoria,
+    }));
+
   // Local Hooks
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredSubcategorias = banners.subcategories.filter((subcategoria) =>
-    subcategoria.subcategoryName?.toLowerCase().includes(searchTerm)
-  );
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+
+  const filteredSubcategorias =
+    banners?.subcategories?.filter((subcategoria) =>
+      subcategoria.subcategoryName?.toLowerCase().includes(searchTerm)
+    ) || [];
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const handleClick = (subcategoria: string) => {
-    console.log(`Subcategoria clicked: ${subcategoria}`);
+  const handleClick = async (handleSubcategoria: Subcategory) => {
+    await getSubcategoria(handleSubcategoria.id);
+    selectSubcategoria(handleSubcategoria);
+    console.log("Subcategoria: ", subcategoria);
+    if (subcategoria) {
+      router.push(`/categorias/${subcategoria.categoryId}/${subcategoria.id}`);
+    }
   };
 
   return (
@@ -55,7 +78,7 @@ const SubcategoriaTable = ({
             {filteredSubcategorias.map((subcategoria) => (
               <TableRow
                 key={subcategoria.id}
-                onClick={() => handleClick(subcategoria.subcategoryName)}
+                onClick={() => handleClick(subcategoria)}
                 style={{ cursor: "pointer" }}
               >
                 <TableCell>

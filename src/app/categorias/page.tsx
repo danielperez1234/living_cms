@@ -11,9 +11,11 @@ export default function Page() {
   const loading = useCategoriasStore((state) => state.loading);
   const getCategorias = useCategoriasStore((state) => state.getCategorias);
   const clean = useCategoriasStore((state) => state.clean);
+
   useEffect(() => {
     getCategorias();
   }, []);
+  
   if (loading) {
     return (
       <Backdrop

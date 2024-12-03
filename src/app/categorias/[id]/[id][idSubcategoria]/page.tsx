@@ -2,17 +2,19 @@
 
 import { useEffect } from "react";
 import AppNavBar from "@/components/common/app_nav_bar/main";
-import SubcategoriaTable from "@/components/categorias/subcategorias/subcategoria_table";
 import useSubcategoriasStore from "@/service/subcategorias/store";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, CircularProgress, Typography } from "@mui/material";
 
 interface SubcategoriesProps {
   params: {
     id: string;
+    idSubcategpria: string;
   };
 }
 
-export default function Page({ params: { id } }: SubcategoriesProps) {
+export default function Page({
+  params: { id, idSubcategpria },
+}: SubcategoriesProps) {
   const subcategorias = useSubcategoriasStore((state) => state.subcategorias);
   const loading = useSubcategoriasStore((state) => state.loading);
   const getSubcategorias = useSubcategoriasStore(
@@ -41,7 +43,7 @@ export default function Page({ params: { id } }: SubcategoriesProps) {
   return (
     <>
       <AppNavBar title={`${subcategorias.categoryName}`} />
-      <SubcategoriaTable subcategorias={subcategorias} />
+      <Typography variant="h1">Nigger</Typography>
     </>
   );
 }

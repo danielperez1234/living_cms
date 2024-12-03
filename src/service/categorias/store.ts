@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Categoria } from "./interface";
+import { Categoria, categoriaPut } from "./interface";
 import {
   DeleteCategoria,
   GetCategorias,
@@ -18,7 +18,7 @@ interface CategoriaState {
   getSubcategorias: (idCategoria: string) => void;
   deleteCategoria: (id: string) => Promise<void>;
   addCategoria: (categoria: string) => Promise<void>;
-  updateCategoria: (categoria: Categoria) => Promise<void>;
+  updateCategoria: (categoria: categoriaPut) => Promise<void>;
   clean: () => void;
 }
 
@@ -56,7 +56,7 @@ const useCategoriasStore = create<CategoriaState>()((set) => ({
       };
     });
   },
-  getSubcategorias: async (idCategoria: string) => {
+  getSubcategorias: async (idCategoria) => {
     set((state) => ({
       ...state,
       loading: true,
@@ -100,4 +100,5 @@ const useCategoriasStore = create<CategoriaState>()((set) => ({
   },
   clean: () => set((state) => ({ categorias: [] })),
 }));
+
 export default useCategoriasStore;
