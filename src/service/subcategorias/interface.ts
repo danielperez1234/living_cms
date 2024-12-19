@@ -20,10 +20,3 @@ export interface SubcategoryPost {
   name: string;
   products: Product[];
 }
-
-// export interface SubcategoryPut {
-//   id: "string";
-//   categoryId: string;
-//   categoryName: string;
-
-// }
