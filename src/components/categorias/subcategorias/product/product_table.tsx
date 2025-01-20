@@ -14,66 +14,61 @@ import {
   TextField,
 } from "@mui/material";
 import SimplePagination from "@/components/common/paginado";
-import { Subcategoria, Subcategory } from "@/service/subcategorias/interface";
+import { Subcategoria, Subcategory, SubcategoryProducts } from "@/service/subcategorias/interface";
 import { useRouter } from "next/navigation";
 import useSubcategoriasStore from "@/service/subcategorias/store";
-import AgregarSubCategoriaModal from "./add_subcategory";
 import useCategoriasStore from "@/service/categorias/store";
 
 import AddIcon from "@mui/icons-material/Add";
-const SubcategoriaTable = ({
-  subcategorias: banners,
-  idCategory
+import AgregarProductModal from "./add_product";
+import useProductsStore from "@/service/productos/store";
+import { Product } from "@/service/productos/interface";
+const ProductsTable = ({
+  idSubcategory
 }: {
-  subcategorias: Subcategoria;
-  idCategory:string
+  idSubcategory:string
 }) => {
   // Router
   const router = useRouter();
 
   // Zustand Hooks
-  const { getSubcategoria, selectSubcategoria, subcategoria,selectedSubcategoria } =
-    useSubcategoriasStore((state) => ({
-      getSubcategoria: state.getSubcategoriaProducts,
-      selectSubcategoria: state.selectSubcategoria,
-      subcategoria: state.subcategoriaProducts,
-      selectedSubcategoria: state.selectedSubcategoria
-    }));
-    const postsubcategoria = useSubcategoriasStore((state) => state.addSubcategoria);
-    const getSubcategorias = useSubcategoriasStore((state) => state.getSubcategorias);
+  const banners = useSubcategoriasStore(state=>state.subcategoriaProducts);
+  //Zustand functions
+  const getSubcategoria = useSubcategoriasStore(state=>state.getSubcategoriaProducts);
+    // const postProduct = useProductsStore((state) => state.);
   // Local Hooks
+  const [page,setPage] = useState(2);
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const filteredSubcategorias =
-    banners?.subcategories?.filter((subcategoria) =>
-      subcategoria.subcategoryName?.toLowerCase().includes(searchTerm)
+    banners?.datosPaginados.subcategoryProductDtos?.filter((subcategoria) =>
+      subcategoria.name?.toLowerCase().includes(searchTerm)
     ) || [];
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const handleClick = async (handleSubcategoria: Subcategory) => {
-    await getSubcategoria(handleSubcategoria.id);
-    selectSubcategoria(handleSubcategoria);
+  const handleClick = async (handleSubcategoria: Product) => {
+    // await getSubcategoria(handleSubcategoria.id);
+    // selectSubcategoria(handleSubcategoria);
     
   };
-  useEffect(()=>{
-    console.log("Subcategoria: ", selectedSubcategoria);
-    if (selectedSubcategoria) {
-      router.push(`/categorias/${idCategory}/${selectedSubcategoria.id}`);
-    }
-  },[selectedSubcategoria]);
+  const getPages = async ()=>{
+    const newPage = await getSubcategoria(idSubcategory,page);
+    setPage(newPage);
+  }
+  
   return (
     <Box>
-      <AgregarSubCategoriaModal
+      <AgregarProductModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (subCategory) => {
-          await postsubcategoria(subCategory,idCategory);
-          getSubcategorias(idCategory);
+          //await postsubcategoria(subCategory,idCategory);
+          getPages();
         }}
       />
       <TextField
@@ -83,7 +78,7 @@ const SubcategoriaTable = ({
         margin="normal"
         onChange={handleSearchChange}
       />
-<Box
+      <Box
         display={"flex"}
         width={"96%"}
         marginX={"2%"}
@@ -117,7 +112,7 @@ const SubcategoriaTable = ({
                 style={{ cursor: "pointer" }}
               >
                 <TableCell>
-                  {subcategoria.subcategoryName ?? "Sin nombre"}
+                  {subcategoria.name ?? "Sin nombre"}
                 </TableCell>
                 <TableCell>{subcategoria.id ?? "Sin descripcion"}</TableCell>
               </TableRow>
@@ -132,4 +127,4 @@ const SubcategoriaTable = ({
   );
 };
 
-export default SubcategoriaTable;
+export default ProductsTable;

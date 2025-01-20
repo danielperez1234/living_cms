@@ -13,10 +13,18 @@ export interface Subcategory {
 }
 
 // 12/02/2024
-export interface SubcategoryPost {
-  id: string;
-  categoryId: string;
-  category: object;
-  name: string;
-  products: Product[];
+export interface SubcategoryProducts {
+  elementos:      number;
+  datosPaginados: DatosPaginados;
+}
+
+export interface DatosPaginados {
+  id:                     string;
+  subcategoryName:        string;
+  subcategoryProductDtos: Product[];
+}
+
+export interface newSubcategory {
+  Name: string;
+CategoryId: string;
 }

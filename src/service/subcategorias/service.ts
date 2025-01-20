@@ -1,7 +1,7 @@
 import { storageKeys } from "@/const/storage_keys";
 import { Response, request } from "../service";
 import "../service";
-import { Subcategoria, Subcategory, SubcategoryPost } from "./interface";
+import { newSubcategory as NewSubcategory, Subcategoria, Subcategory, SubcategoryProducts } from "./interface";
 
 export async function GetSubcategorias(
   idCategoria: string
@@ -24,13 +24,13 @@ export async function GetSubcategorias(
 }
 
 export async function GetSubcategoria(
-  id: string
-): Promise<Response<SubcategoryPost>> {
+  id: string,page:number
+): Promise<Response<SubcategoryProducts>> {
   try {
     console.log("ID de la subcategoria: ", id);
     return await request({
       method: "GET",
-      endpoint: `/${id}`,
+      endpoint: `/${id}?pageNumber=${page}&pageSize=10`,
     });
   } catch (err) {
     return {
@@ -61,13 +61,13 @@ export async function PostSubcategoria(
   idCategoria: string
 ) {
   try {
-    const subcategoriaPost: Subcategory = {
-      subcategoryName: subcategoria,
-      id: idCategoria,
+    const subcategoriaPost: NewSubcategory = {
+      Name: subcategoria,
+      CategoryId: idCategoria
     };
     return await request({
       method: "POST",
-      endpoint: `/subcategory`,
+      endpoint: `/subcategory?Name=${subcategoria}&CategoryId=${idCategoria}`,
       body: subcategoriaPost,
     });
   } catch (err) {

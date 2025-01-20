@@ -41,7 +41,7 @@ export default function Page({ params: { id } }: SubcategoriesProps) {
   return (
     <>
       <AppNavBar title={`${subcategorias.categoryName}`} />
-      <SubcategoriaTable subcategorias={subcategorias} />
+      <SubcategoriaTable subcategorias={subcategorias} idCategory={id}/>
     </>
   );
 }

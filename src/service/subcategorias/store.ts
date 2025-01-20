@@ -1,21 +1,21 @@
 import { create } from "zustand";
-import { Subcategoria, Subcategory, SubcategoryPost } from "./interface";
+import { Subcategoria, Subcategory, SubcategoryProducts } from "./interface";
 import {
   DeleteSubcategoria,
   GetSubcategoria,
   GetSubcategorias,
-  PostSubcategoria,
+  PostSubcategoria
 } from "./service";
 
 interface SubcategoriaState {
   subcategorias: Subcategoria;
-  subcategoria?: SubcategoryPost;
+  subcategoriaProducts?: SubcategoryProducts;
   errorMsg: string | undefined;
   loading: boolean;
-  selectedSubcategoria?: Subcategoria;
+  selectedSubcategoria?: Subcategory;
   selectSubcategoria: (Subcategoria: Subcategory) => void;
   getSubcategorias: (idCategoria: string) => void;
-  getSubcategoria: (id: string) => void;
+  getSubcategoriaProducts: (id: string,page:number) => Promise<number>;
   deleteSubcategoria: (id: string) => Promise<void>;
   addSubcategoria: (subcategoria: string, idCategoria: string) => Promise<void>;
   clean: () => void;
@@ -25,16 +25,16 @@ const useSubcategoriasStore = create<SubcategoriaState>()((set) => ({
   subcategorias: { id: "", categoryName: "", subcategories: [] },
   errorMsg: undefined,
   loading: false,
-  selectSubcategoria: () => {
+  selectSubcategoria: (subcategoria) => {
     set((state) => ({
       ...state,
-      selectedSubcategoria: state.subcategorias,
+      selectedSubcategoria: subcategoria
     }));
   },
   getSubcategorias: async (idCategoria) => {
     set((state) => ({
       ...state,
-      loading: true,
+      loading: true
     }));
     const response = await GetSubcategorias(idCategoria);
     console.log("Prueba subcategoria: " + response.data);
@@ -43,7 +43,7 @@ const useSubcategoriasStore = create<SubcategoriaState>()((set) => ({
         return {
           ...state,
           loading: false,
-          subcategorias: response.data,
+          subcategorias: response.data
         };
       });
 
@@ -52,34 +52,35 @@ const useSubcategoriasStore = create<SubcategoriaState>()((set) => ({
     set((state) => {
       return {
         ...state,
-        loading: false,
+        loading: false
       };
     });
   },
-  getSubcategoria: async (id) => {
+  getSubcategoriaProducts: async (id,page) => {
     set((state) => ({
       ...state,
-      loading: true,
+      loading: true
     }));
-    const response = await GetSubcategoria(id);
+    const response = await GetSubcategoria(id,page);
     console.log("Prueba get subcategoria: " + response.data);
     if (response.status < 300 && response.data) {
       set((state) => {
         return {
           ...state,
           loading: false,
-          subcategoria: response.data,
+          subcategoriaProducts: response.data
         };
       });
-
-      return;
+      const newpage = page *10 >= response.data.elementos? page:page+1;
+      return newpage;
     }
     set((state) => {
       return {
         ...state,
-        loading: false,
+        loading: false
       };
     });
+    return page;
   },
   deleteSubcategoria: async (id) => {
     set((state) => ({ ...state, loading: true }));
@@ -95,8 +96,8 @@ const useSubcategoriasStore = create<SubcategoriaState>()((set) => ({
   },
   clean: () =>
     set((state) => ({
-      subcategorias: { id: "", categoryName: "", subcategories: [] },
-    })),
+      subcategorias: { id: "", categoryName: "", subcategories: [] }
+    }))
 }));
 
 export default useSubcategoriasStore;
