@@ -6,12 +6,12 @@ export async function GetAllProducts(): Promise<Response<Product[]>> {
   try {
     return await request({
       method: "GET",
-      endpoint: "/api/Products",
+      endpoint: "/api/Products"
     });
   } catch (err) {
     return {
       status: 500,
-      error: `${err}`,
+      error: `${err}`
     };
   }
 }
@@ -21,12 +21,25 @@ export async function GetProduct(id: string): Promise<Response<Product>> {
     console.log("ID: ", id);
     return await request({
       method: "GET",
-      endpoint: `/api/Products/${id}`,
+      endpoint: `/api/Products/${id}`
     });
   } catch (err) {
     return {
       status: 500,
-      error: `${err}`,
+      error: `${err}`
+    };
+  }
+}
+export async function GetProductImages(id: string): Promise<Response<string[]>> {
+  try {
+    return await request({
+      method: "GET",
+      endpoint: `/api/Product/${id}/images`
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
     };
   }
 }
@@ -35,12 +48,12 @@ export async function DeleteProduct(id: string): Promise<Response<Product[]>> {
   try {
     return await request({
       method: "DELETE",
-      endpoint: `/api/Products/${id}`,
+      endpoint: `/api/Products/${id}`
     });
   } catch (err) {
     return {
       status: 500,
-      error: `${err}`,
+      error: `${err}`
     };
   }
 }
@@ -54,16 +67,38 @@ export async function PostProduct(productPost: ProductPost) {
     //?Name=${productPost.name}&Price=25&WholesalePrice=20&MaxOrder=200&SubcategoryId=2f6d2a1f-f808-4e9d-3b42-08dcd84fa740
     return await request<any>({
       method: "POST",
-      endpoint: `/api/Product`,
+      endpoint: `/api/Product?Name=${productPost.name}&Price=${productPost.price}&WholesalePrice=${productPost.wholesalePrice}&MaxOrder=${productPost.maxOrder}&SubcategoryId=${productPost.subcategoryId}`,
       headers: {
-        "Content-Type": `multipart/form-data;`,
+        "Content-Type": `multipart/form-data;`
       },
-      formData: formData,
+      formData: formData
     });
   } catch (err) {
     return {
       status: 500,
-      error: `${err}`,
+      error: `${err}`
+    };
+  }
+}
+export async function PostProductImage(id:string,image:File) {
+  try {
+    const formData = new FormData();
+    
+        formData.append("image", image);
+    
+    //?Name=${productPost.name}&Price=25&WholesalePrice=20&MaxOrder=200&SubcategoryId=2f6d2a1f-f808-4e9d-3b42-08dcd84fa740
+    return await request<any>({
+      method: "POST",
+      endpoint: `/api/Product/${id}/add-image`,
+      headers: {
+        "Content-Type": `multipart/form-data;`
+      },
+      formData: formData
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
     };
   }
 }

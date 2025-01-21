@@ -1,16 +1,27 @@
 import { create } from "zustand";
-import { DeleteProduct, GetAllProducts, GetProduct } from "./service";
-import { Product } from "./interface";
+import {
+  DeleteProduct,
+  GetAllProducts,
+  GetProduct,
+  GetProductImages,
+  PostProduct,
+  PostProductImage
+} from "./service";
+import { Product, ProductPost } from "./interface";
 
 interface ProductState {
   productos: Product[];
   producto?: Product;
+  productImages?: string[];
   errorMsg: string | undefined;
   loading: boolean;
   getAllProducts: () => void;
   getProduct: (id: string) => void;
+  getProductImages: (id: string) => void;
   deleteProduct: (id: string) => void;
   setProducts: (x: Product[]) => void;
+  postProduct: (x: ProductPost) => void;
+  postProductImage: (id: string,image:File) => Promise<void>;
   clean: () => void;
 }
 
@@ -18,10 +29,11 @@ const useProductsStore = create<ProductState>()((set) => ({
   productos: [],
   errorMsg: undefined,
   loading: false,
+  productImages:[],
   getAllProducts: async () => {
     set((state) => ({
       ...state,
-      loading: true,
+      loading: true
     }));
     const response = await GetAllProducts();
     console.log("Productos: " + response.data);
@@ -30,7 +42,7 @@ const useProductsStore = create<ProductState>()((set) => ({
         return {
           ...state,
           loading: false,
-          productos: response.data,
+          productos: response.data
         };
       });
 
@@ -39,14 +51,14 @@ const useProductsStore = create<ProductState>()((set) => ({
     set((state) => {
       return {
         ...state,
-        loading: false,
+        loading: false
       };
     });
   },
   getProduct: async (id) => {
     set((state) => ({
       ...state,
-      loading: true,
+      loading: true
     }));
     const response = await GetProduct(id);
     console.log("Prueba de producto: ", response.data);
@@ -55,7 +67,7 @@ const useProductsStore = create<ProductState>()((set) => ({
         return {
           ...state,
           loading: false,
-          producto: response.data,
+          producto: response.data
         };
       });
       return;
@@ -63,19 +75,43 @@ const useProductsStore = create<ProductState>()((set) => ({
     set((state) => {
       return {
         ...state,
-        loading: false,
+        loading: false
+      };
+    });
+  },
+  getProductImages: async (id) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await GetProductImages(id);
+    console.log("Prueba de producto: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
+          productImages:response.data?.map(e=>e)
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
       };
     });
   },
   deleteProduct: async (id) => {
     set((state) => ({
       ...state,
-      loading: true,
+      loading: true
     }));
     await DeleteProduct(id);
     set((state) => ({
       ...state,
-      loading: false,
+      loading: false
     }));
   },
   setProducts: (prods) => {
@@ -83,7 +119,54 @@ const useProductsStore = create<ProductState>()((set) => ({
       return {
         ...state,
         loading: false,
-        productos: prods,
+        productos: prods
+      };
+    });
+  },
+  postProduct: async (prod) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await PostProduct(prod);
+    console.log("Prueba de post producto: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
+          producto: response.data
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
+      };
+    });
+  },
+  postProductImage: async (id,image) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await PostProductImage(id,image);
+    console.log("Prueba de post producto: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
       };
     });
   },
@@ -91,8 +174,8 @@ const useProductsStore = create<ProductState>()((set) => ({
     set(() => ({
       errorMsg: undefined,
       loading: false,
-      productos: [],
-    })),
+      productos: []
+    }))
 }));
 
 export default useProductsStore;

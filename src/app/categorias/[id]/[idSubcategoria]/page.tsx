@@ -16,37 +16,19 @@ interface SubcategoriesProps {
 export default function Page({
   params: { id, idSubcategoria },
 }: SubcategoriesProps) {
-  const subcategoria = useSubcategoriasStore((state) => state.selectedSubcategoria);
+  const subcategoria = useSubcategoriasStore(state=>state.subcategoriaProducts);
   const loading = useSubcategoriasStore((state) => state.loading);
-  const getSubcategorias = useSubcategoriasStore(
-    (state) => state.getSubcategorias
-  );
-  const getSubcategoriaProducts = useSubcategoriasStore(
-    (state) => state.getSubcategoriaProducts
-  );
-  const clean = useSubcategoriasStore((state) => state.clean);
 
-  useEffect(() => {
-    // Fetch subcategories on mount
-    getSubcategorias(id);
-    getSubcategoriaProducts(id,1);
-    return () => clean();
-  }, []);
 
-  if (loading) {
-    return (
-      <Backdrop
+  return (
+    <>
+    {loading && <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="primary" />
-      </Backdrop>
-    );
-  }
-
-  return (
-    <>
-      <AppNavBar title={`${subcategoria?.subcategoryName}`} />
+      </Backdrop>}
+      <AppNavBar title={`${subcategoria?.datosPaginados.subcategoryName}`} />
       <ProductsTable idSubcategory={idSubcategoria}/>
     </>
   );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Fab,
   Paper,
   Table,
@@ -19,10 +20,12 @@ import { useRouter } from "next/navigation";
 import useSubcategoriasStore from "@/service/subcategorias/store";
 import useCategoriasStore from "@/service/categorias/store";
 
+import ImageIcon from "@mui/icons-material/Image";
 import AddIcon from "@mui/icons-material/Add";
-import AgregarProductModal from "./add_product";
 import useProductsStore from "@/service/productos/store";
 import { Product } from "@/service/productos/interface";
+import AgregarProductModal from "./add_product";
+import ProductImageModal from "./product_image";
 const ProductsTable = ({
   idSubcategory
 }: {
@@ -33,14 +36,21 @@ const ProductsTable = ({
 
   // Zustand Hooks
   const banners = useSubcategoriasStore(state=>state.subcategoriaProducts);
+  const productImages = useProductsStore(state=>state.productImages);
   //Zustand functions
   const getSubcategoria = useSubcategoriasStore(state=>state.getSubcategoriaProducts);
+  const addProduct = useProductsStore(state=>state.postProduct);
+  const getProductImages = useProductsStore(state=>state.getProductImages);
     // const postProduct = useProductsStore((state) => state.);
   // Local Hooks
-  const [page,setPage] = useState(2);
+  const [page,setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [imageModal, setImageModal] = useState("");
+  const [productSelected, setProductSelected] = useState<string|undefined>();
 
   const filteredSubcategorias =
     banners?.datosPaginados.subcategoryProductDtos?.filter((subcategoria) =>
@@ -58,18 +68,26 @@ const ProductsTable = ({
   };
   const getPages = async ()=>{
     const newPage = await getSubcategoria(idSubcategory,page);
-    setPage(newPage);
+    
   }
-  
+  useEffect(()=>{
+    getPages();
+  },[page])
   return (
     <Box>
       <AgregarProductModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
-        onSubmit={async (subCategory) => {
-          //await postsubcategoria(subCategory,idCategory);
-          getPages();
-        }}
+        onSubmit={async (postProduct) => {
+          await addProduct(postProduct);
+          setPage(1)
+        } } accept={"image/*"}   subcategoryId={idSubcategory}   />
+        <ProductImageModal
+        id={productSelected ?? ''}
+        images={productImages??[]}
+        open={openImageModal}
+        onClose={() => setOpenImageModal(false)}
+        file={imageModal}
       />
       <TextField
         label="Buscar por nombre"
@@ -105,16 +123,30 @@ const ProductsTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredSubcategorias.map((subcategoria) => (
+            {filteredSubcategorias.map((product) => (
               <TableRow
-                key={subcategoria.id}
-                onClick={() => handleClick(subcategoria)}
+                key={product.id}
+                onClick={() => handleClick(product)}
                 style={{ cursor: "pointer" }}
               >
                 <TableCell>
-                  {subcategoria.name ?? "Sin nombre"}
+                  {product.name ?? "Sin nombre"}
                 </TableCell>
-                <TableCell>{subcategoria.id ?? "Sin descripcion"}</TableCell>
+                <TableCell>{product.id ?? "Sin descripcion"}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      setImageModal(product.imageUrlOriginal ?? "");
+                      setOpenImageModal(true);
+                      setProductSelected(product.id)
+                      getProductImages(product.id);
+                    }}
+                  >
+                    <ImageIcon />
+                  </Button>
+                  
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

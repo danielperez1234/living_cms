@@ -2,6 +2,8 @@
 const nextConfig = {
     basePath: '/cms',
     images: {
+        domains: ['livingphotos.blob.core.windows.net'],
+        
         remotePatterns: [
           {
             protocol: 'http',
