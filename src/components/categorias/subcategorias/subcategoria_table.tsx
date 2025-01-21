@@ -32,7 +32,7 @@ const SubcategoriaTable = ({
   const router = useRouter();
 
   // Zustand Hooks
-  const { getSubcategoria, selectSubcategoria, subcategoria,selectedSubcategoria } =
+  const {  selectSubcategoria, subcategoria,selectedSubcategoria } =
     useSubcategoriasStore((state) => ({
       
       selectSubcategoria: state.selectSubcategoria,
