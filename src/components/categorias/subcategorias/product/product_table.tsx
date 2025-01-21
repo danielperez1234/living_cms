@@ -153,7 +153,7 @@ const ProductsTable = ({
         </Table>
       </TableContainer>
       <Box height={"20px"} />
-      <SimplePagination />
+      <SimplePagination onChange={(page)=>setPage(page)}/>
 
     </Box>
   );
