@@ -2,9 +2,13 @@ import React from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
-const SimplePagination: React.FC = ({onChange}:{onChange?:(page:number)=>void}) => {
+interface SimplePaginationProps {
+  onChange?: (page: number) => void;
+}
+
+const SimplePagination: React.FC<SimplePaginationProps> = ({ onChange }) => {
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-    if(onChange){
+    if (onChange) {
       onChange(page);
     }
   };
@@ -15,5 +19,6 @@ const SimplePagination: React.FC = ({onChange}:{onChange?:(page:number)=>void}) 
     </Stack>
   );
 };
+
 
 export default SimplePagination;
