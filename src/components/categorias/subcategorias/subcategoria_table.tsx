@@ -34,7 +34,7 @@ const SubcategoriaTable = ({
   // Zustand Hooks
   const { getSubcategoria, selectSubcategoria, subcategoria,selectedSubcategoria } =
     useSubcategoriasStore((state) => ({
-      getSubcategoria: state.getSubcategoriaProducts,
+      
       selectSubcategoria: state.selectSubcategoria,
       subcategoria: state.subcategoriaProducts,
       selectedSubcategoria: state.selectedSubcategoria
