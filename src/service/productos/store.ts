@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {
   DeleteProduct,
+  DeleteProductImage,
   GetAllProducts,
   GetProduct,
   GetProductImages,
@@ -18,6 +19,7 @@ interface ProductState {
   getAllProducts: () => void;
   getProduct: (id: string) => void;
   getProductImages: (id: string) => void;
+  deleteProductImage: (id: string,position:number) => Promise<void>;
   deleteProduct: (id: string) => void;
   setProducts: (x: Product[]) => void;
   postProduct: (x: ProductPost) => void;
@@ -129,6 +131,30 @@ const useProductsStore = create<ProductState>()((set) => ({
       loading: true
     }));
     const response = await PostProduct(prod);
+    console.log("Prueba de post producto: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
+          producto: response.data
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
+      };
+    });
+  },
+  deleteProductImage: async (id,position) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await DeleteProductImage(id,position);
     console.log("Prueba de post producto: ", response.data);
     if (response.status < 300 && response.data) {
       set((state) => {

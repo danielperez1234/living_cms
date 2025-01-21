@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import CloseIcon from '@mui/icons-material/Close';
 import useProductsStore from "@/service/productos/store";
 interface AddAssetModalProps {
   open: boolean;
@@ -38,6 +39,7 @@ const ProductImageModal: React.FC<AddAssetModalProps> = ({
   //Zustand Functions
   const postProductImage = useProductsStore(state=>state.postProductImage);
   const getProductImages = useProductsStore(state=>state.getProductImages);
+  const deleteProductImage = useProductsStore(state=>state.deleteProductImage);
   const handlePostProduct = async ()=>{
     if(newFile){
       await postProductImage(id,newFile);
@@ -119,7 +121,20 @@ const ProductImageModal: React.FC<AddAssetModalProps> = ({
                 alignItems: "center"
               }}  
             >
-              {images[e] ? <img
+              {images[e] ? (
+                <Box sx={{
+                  
+                }}  >
+                 <Box sx={{position:"absolute" }}> 
+                  <Button  color="error" onClick={async()=>{
+                   await deleteProductImage(id,e+1);
+                   getProductImages(id);
+                  }}>
+                    
+                  <CloseIcon/>
+                  </Button>
+                  </Box>
+                <img
                 src={images[e]}
                 alt={"banner_image"}
                 style={{
@@ -128,7 +143,7 @@ const ProductImageModal: React.FC<AddAssetModalProps> = ({
                   maxHeight: "100%",
                   alignSelf: "center"
                 }}
-              />:
+              /></Box>):
               <Button
             variant="text"
             component="label"

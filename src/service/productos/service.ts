@@ -80,6 +80,22 @@ export async function PostProduct(productPost: ProductPost) {
     };
   }
 }
+export async function DeleteProductImage(id: string,position:number) {
+  try {
+    
+    //?Name=${productPost.name}&Price=25&WholesalePrice=20&MaxOrder=200&SubcategoryId=2f6d2a1f-f808-4e9d-3b42-08dcd84fa740
+    return await request<any>({
+      method: "DELETE",
+      endpoint: `/api/Product/${id}/remove-image?position=${position}`,
+      
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}
 export async function PostProductImage(id:string,image:File) {
   try {
     const formData = new FormData();
