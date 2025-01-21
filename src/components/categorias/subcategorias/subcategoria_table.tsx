@@ -56,7 +56,6 @@ const SubcategoriaTable = ({
   };
 
   const handleClick = async (handleSubcategoria: Subcategory) => {
-    await getSubcategoria(handleSubcategoria.id);
     selectSubcategoria(handleSubcategoria);
     
   };
