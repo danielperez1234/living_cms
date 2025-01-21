@@ -80,7 +80,7 @@ const ProductsTable = ({
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (postProduct) => {
           await addProduct(postProduct);
-          setPage(1)
+          getSubcategoria(idSubcategory,page);
         } } accept={"image/*"}   subcategoryId={idSubcategory}   />
         <ProductImageModal
         id={productSelected ?? ''}
