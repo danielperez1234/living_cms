@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Box,
@@ -8,25 +8,27 @@ import {
   Backdrop,
   Fade
 } from "@mui/material";
-import { ProductPost } from "@/service/productos/interface";
+import { Product, ProductPost, ProductPut } from "@/service/productos/interface";
 
-interface UpdateAssetModalProps {
+interface UpdateProductModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: ProductPost) => void;
+  onSubmit: (data: ProductPut) => void;
+  product: Product | undefined;
   accept: string;
   subcategoryId: string;
 }
 
 
 
-const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
+const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
   open,
   onClose,
   onSubmit,
-  accept,subcategoryId
+  product,
+  accept, subcategoryId
 }) => {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined>();
   const [name, setAssetName] = useState<string>("");
   const [price, setPrice] = useState<string>("0");
   const [wholesalePrice, setWholesalePrice] = useState<string>("0");
@@ -37,25 +39,43 @@ const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
       setFile(event.target.files[0]);
     }
   };
+  const handleClosing = () => {
 
+    onClose();
+    setAssetName('');
+    setPrice('0');
+    setMaxOrder('0');
+    setWholesalePrice('0');
+    setFile(undefined);
+  }
   const handleSubmit = () => {
-    if (file && name != "" && price != ""&& wholesalePrice != ""&& maxOrder != "") {
+
+    if (file && name != "" && price != "" && wholesalePrice != "" && maxOrder != "") {
       onSubmit({
+        id: product?.id ?? '',
         image: file,
         name: name,
         price: price,
         maxOrder: maxOrder,
-        subcategoryId:subcategoryId,
-        wholesalePrice:wholesalePrice
+        subcategoryId: subcategoryId,
+        wholesalePrice: wholesalePrice
       });
-      onClose(); // Close the modal after submitting
+      handleClosing(); // Close the modal after submitting
+
     }
   };
-
+  useEffect(() => {
+    if (product) {
+      setAssetName(product.name),
+        setPrice(product.price.toString())
+      setMaxOrder(product.maxOrder.toString())
+      setWholesalePrice(product.wholesalePrice.toString())
+    }
+  }, [product])
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClosing}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{
@@ -101,7 +121,7 @@ const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
             variant="outlined"
             type="number"
             inputProps={{
-              
+
               maxLength: 100
             }}
             rows={4}
@@ -115,7 +135,7 @@ const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
             variant="outlined"
             type="number"
             inputProps={{
-              
+
               maxLength: 100
             }}
             rows={4}
@@ -129,19 +149,19 @@ const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
             variant="outlined"
             type="number"
             inputProps={{
-              
+
               maxLength: 100
             }}
             rows={4}
           />
-          
+
           <Button
             variant="contained"
             component="label"
             fullWidth
             sx={{ mt: 2 }}
           >
-            Seleccionar archivo
+            Seleccionar archivo {' (opcional)'}
             <input
               type={"file"}
               hidden
@@ -161,7 +181,7 @@ const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
             fullWidth
             sx={{ mt: 2 }}
           >
-            Agregar
+            Modificar
           </Button>
         </Box>
       </Fade>
@@ -169,4 +189,4 @@ const AgregarProductModal: React.FC<UpdateAssetModalProps> = ({
   );
 };
 
-export default AgregarProductModal;
+export default UpdateProductModal;

@@ -32,12 +32,13 @@ const SubcategoriaTable = ({
   const router = useRouter();
 
   // Zustand Hooks
-  const {  selectSubcategoria, subcategoria,selectedSubcategoria } =
+  const {  selectSubcategoria, subcategoria,selectedSubcategoria,clearSelection } =
     useSubcategoriasStore((state) => ({
       
       selectSubcategoria: state.selectSubcategoria,
       subcategoria: state.subcategoriaProducts,
-      selectedSubcategoria: state.selectedSubcategoria
+      selectedSubcategoria: state.selectedSubcategoria,
+      clearSelection:state.clearSelection
     }));
     const postsubcategoria = useSubcategoriasStore((state) => state.addSubcategoria);
     const getSubcategorias = useSubcategoriasStore((state) => state.getSubcategorias);
@@ -45,6 +46,7 @@ const SubcategoriaTable = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [idSelected,setIdSelected] = useState<string | undefined>()
 
   const filteredSubcategorias =
     banners?.subcategories?.filter((subcategoria) =>
@@ -57,14 +59,17 @@ const SubcategoriaTable = ({
 
   const handleClick = async (handleSubcategoria: Subcategory) => {
     selectSubcategoria(handleSubcategoria);
-    
+    setIdSelected(handleSubcategoria.id)
   };
   useEffect(()=>{
+    clearSelection();
+  },[])
+  useEffect(()=>{
     console.log("Subcategoria: ", selectedSubcategoria);
-    if (selectedSubcategoria) {
-      router.push(`/categorias/${idCategory}/${selectedSubcategoria.id}`);
+    if (idSelected) {
+      router.push(`/categorias/${idCategory}/${idSelected}`);
     }
-  },[selectedSubcategoria]);
+  },[idSelected]);
   return (
     <Box>
       <AgregarSubCategoriaModal

@@ -15,42 +15,44 @@ import {
   TextField,
 } from "@mui/material";
 import SimplePagination from "@/components/common/paginado";
-import { Subcategoria, Subcategory, SubcategoryProducts } from "@/service/subcategorias/interface";
 import { useRouter } from "next/navigation";
 import useSubcategoriasStore from "@/service/subcategorias/store";
-import useCategoriasStore from "@/service/categorias/store";
 
 import ImageIcon from "@mui/icons-material/Image";
+
+import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import useProductsStore from "@/service/productos/store";
 import { Product } from "@/service/productos/interface";
 import AgregarProductModal from "./add_product";
 import ProductImageModal from "./product_image";
+import UpdateProductModal from "./update_product";
 const ProductsTable = ({
   idSubcategory
 }: {
-  idSubcategory:string
+  idSubcategory: string
 }) => {
   // Router
   const router = useRouter();
 
   // Zustand Hooks
-  const banners = useSubcategoriasStore(state=>state.subcategoriaProducts);
-  const productImages = useProductsStore(state=>state.productImages);
+  const banners = useSubcategoriasStore(state => state.subcategoriaProducts);
+  const productImages = useProductsStore(state => state.productImages);
   //Zustand functions
-  const getSubcategoria = useSubcategoriasStore(state=>state.getSubcategoriaProducts);
-  const addProduct = useProductsStore(state=>state.postProduct);
-  const getProductImages = useProductsStore(state=>state.getProductImages);
-    // const postProduct = useProductsStore((state) => state.);
+  const getSubcategoria = useSubcategoriasStore(state => state.getSubcategoriaProducts);
+  const addProduct = useProductsStore(state => state.postProduct);
+  const updateProducto = useProductsStore(state => state.putProduct);
+  const getProductImages = useProductsStore(state => state.getProductImages);
+  // const postProduct = useProductsStore((state) => state.);
   // Local Hooks
-  const [page,setPage] = useState(1);
+  const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
-
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const [openImageModal, setOpenImageModal] = useState(false);
   const [imageModal, setImageModal] = useState("");
-  const [productSelected, setProductSelected] = useState<string|undefined>();
+  const [productSelected, setProductSelected] = useState<string | undefined>();
 
   const filteredSubcategorias =
     banners?.datosPaginados.subcategoryProductDtos?.filter((subcategoria) =>
@@ -60,19 +62,22 @@ const ProductsTable = ({
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
-
+  const handleEditProduct = (product: Product) => {
+    setOpenUpdateModal(true);
+    setSelectedProduct(product)
+  }
   const handleClick = async (handleSubcategoria: Product) => {
     // await getSubcategoria(handleSubcategoria.id);
     // selectSubcategoria(handleSubcategoria);
-    
+
   };
-  const getPages = async ()=>{
-    const newPage = await getSubcategoria(idSubcategory,page);
-    
+  const getPages = async () => {
+    const newPage = await getSubcategoria(idSubcategory, page);
+
   }
-  useEffect(()=>{
+  useEffect(() => {
     getPages();
-  },[page])
+  }, [page])
   return (
     <Box>
       <AgregarProductModal
@@ -80,11 +85,21 @@ const ProductsTable = ({
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (postProduct) => {
           await addProduct(postProduct);
-          getSubcategoria(idSubcategory,page);
-        } } accept={"image/*"}   subcategoryId={idSubcategory}   />
-        <ProductImageModal
+          getSubcategoria(idSubcategory, page);
+        }} accept={"image/*"} subcategoryId={idSubcategory} />
+      <UpdateProductModal
+        open={openUpdateModal}
+        onClose={() => {
+          setOpenUpdateModal(false)
+          setSelectedProduct(undefined);
+        }}
+        onSubmit={async (postProduct) => {
+          await updateProducto(postProduct);
+          getSubcategoria(idSubcategory, page);
+        }} accept={"image/*"} subcategoryId={idSubcategory} product={selectedProduct} />
+      <ProductImageModal
         id={productSelected ?? ''}
-        images={productImages??[]}
+        images={productImages ?? []}
         open={openImageModal}
         onClose={() => setOpenImageModal(false)}
         file={imageModal}
@@ -145,7 +160,13 @@ const ProductsTable = ({
                   >
                     <ImageIcon />
                   </Button>
-                  
+                  <Button
+                    variant="text"
+                    onClick={() => handleEditProduct(product)}
+                  >
+                    <EditIcon />
+                  </Button>
+
                 </TableCell>
               </TableRow>
             ))}
@@ -153,7 +174,7 @@ const ProductsTable = ({
         </Table>
       </TableContainer>
       <Box height={"20px"} />
-      <SimplePagination onChange={(page)=>setPage(page)}/>
+      <SimplePagination onChange={(page) => setPage(page)} />
 
     </Box>
   );

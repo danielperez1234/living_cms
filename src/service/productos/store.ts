@@ -6,9 +6,10 @@ import {
   GetProduct,
   GetProductImages,
   PostProduct,
-  PostProductImage
+  PostProductImage,
+  PutProduct
 } from "./service";
-import { Product, ProductPost } from "./interface";
+import { Product, ProductPost, ProductPut } from "./interface";
 
 interface ProductState {
   productos: Product[];
@@ -23,6 +24,7 @@ interface ProductState {
   deleteProduct: (id: string) => void;
   setProducts: (x: Product[]) => void;
   postProduct: (x: ProductPost) => void;
+  putProduct: (x: ProductPut) => void;
   postProductImage: (id: string,image:File) => Promise<void>;
   clean: () => void;
 }
@@ -138,6 +140,29 @@ const useProductsStore = create<ProductState>()((set) => ({
           ...state,
           loading: false,
           producto: response.data
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
+      };
+    });
+  },
+  putProduct: async (prod) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await PutProduct(prod);
+    console.log("Prueba de put producto: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
         };
       });
       return;

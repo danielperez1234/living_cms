@@ -1,6 +1,6 @@
 import { Response, request } from "../service";
 import "../service";
-import { Product, ProductPost } from "./interface";
+import { Product, ProductPost, ProductPut } from "./interface";
 
 export async function GetAllProducts(): Promise<Response<Product[]>> {
   try {
@@ -68,6 +68,29 @@ export async function PostProduct(productPost: ProductPost) {
     return await request<any>({
       method: "POST",
       endpoint: `/api/Product?Name=${productPost.name}&Price=${productPost.price}&WholesalePrice=${productPost.wholesalePrice}&MaxOrder=${productPost.maxOrder}&SubcategoryId=${productPost.subcategoryId}`,
+      headers: {
+        "Content-Type": `multipart/form-data;`
+      },
+      formData: formData
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}
+export async function PutProduct(productPut: ProductPut) {
+  try {
+    const formData = new FormData();
+    Object.keys(productPut).forEach((key) => {
+      if (productPut[key as keyof ProductPut])
+        formData.append(key, productPut[key as keyof ProductPost]!);
+    });
+    //?Name=${productPost.name}&Price=25&WholesalePrice=20&MaxOrder=200&SubcategoryId=2f6d2a1f-f808-4e9d-3b42-08dcd84fa740
+    return await request<any>({
+      method: "PUT",
+      endpoint: `/api/Product/${productPut.id}`,
       headers: {
         "Content-Type": `multipart/form-data;`
       },

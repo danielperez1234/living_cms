@@ -14,6 +14,7 @@ interface SubcategoriaState {
   loading: boolean;
   selectedSubcategoria?: Subcategory;
   selectSubcategoria: (Subcategoria: Subcategory) => void;
+  clearSelection: () => void;
   getSubcategorias: (idCategoria: string) => void;
   getSubcategoriaProducts: (id: string,page:number) => Promise<number>;
   deleteSubcategoria: (id: string) => Promise<void>;
@@ -30,6 +31,12 @@ const useSubcategoriasStore = create<SubcategoriaState>()((set) => ({
       ...state,
       selectedSubcategoria: subcategoria
     }));
+  },
+  clearSelection:()=>{
+    set(state=>({
+      ...state,
+      selectedSubcategoria:undefined
+    }))
   },
   getSubcategorias: async (idCategoria) => {
     set((state) => ({

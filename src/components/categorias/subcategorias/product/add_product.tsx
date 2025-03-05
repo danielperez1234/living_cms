@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { ProductPost } from "@/service/productos/interface";
 
-interface AddAssetModalProps {
+interface AddProductModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: ProductPost) => void;
@@ -20,7 +20,7 @@ interface AddAssetModalProps {
 
 
 
-const AgregarProductModal: React.FC<AddAssetModalProps> = ({
+const AgregarProductModal: React.FC<AddProductModalProps> = ({
   open,
   onClose,
   onSubmit,
