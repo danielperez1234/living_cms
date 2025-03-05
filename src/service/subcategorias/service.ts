@@ -30,7 +30,7 @@ export async function GetSubcategoria(
     console.log("ID de la subcategoria: ", id);
     return await request({
       method: "GET",
-      endpoint: `/${id}?pageNumber=${page}&pageSize=10`,
+      endpoint: `/${id}?pageNumber=${page}&pageSize=25`,
     });
   } catch (err) {
     return {
