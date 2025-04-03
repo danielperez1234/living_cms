@@ -38,9 +38,11 @@ const ProductsTable = ({
   // Zustand Hooks
   const banners = useSubcategoriasStore(state => state.subcategoriaProducts);
   const productImages = useProductsStore(state => state.productImages);
+  const producto = useProductsStore(state => state.producto);
   //Zustand functions
   const getSubcategoria = useSubcategoriasStore(state => state.getSubcategoriaProducts);
   const addProduct = useProductsStore(state => state.postProduct);
+  const getProduct = useProductsStore(state => state.getProduct);
   const updateProducto = useProductsStore(state => state.putProduct);
   const getProductImages = useProductsStore(state => state.getProductImages);
   // const postProduct = useProductsStore((state) => state.);
@@ -63,8 +65,8 @@ const ProductsTable = ({
     setSearchTerm(event.target.value.toLowerCase());
   };
   const handleEditProduct = (product: Product) => {
-    setOpenUpdateModal(true);
-    setSelectedProduct(product)
+    
+    getProduct(product.id);
   }
   const handleClick = async (handleSubcategoria: Product) => {
     // await getSubcategoria(handleSubcategoria.id);
@@ -78,6 +80,10 @@ const ProductsTable = ({
   useEffect(() => {
     getPages();
   }, [page])
+  useEffect(() => {
+    setOpenUpdateModal(true);
+    setSelectedProduct(producto);
+  }, [producto])
   return (
     <Box>
       <AgregarProductModal

@@ -30,6 +30,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
 }) => {
   const [file, setFile] = useState<File | undefined>();
   const [name, setAssetName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [price, setPrice] = useState<string>("0");
   const [wholesalePrice, setWholesalePrice] = useState<string>("0");
   const [maxOrder, setMaxOrder] = useState<string>("0");
@@ -43,14 +44,15 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
 
     onClose();
     setAssetName('');
+    setDescription('');
     setPrice('0');
     setMaxOrder('0');
     setWholesalePrice('0');
     setFile(undefined);
   }
   const handleSubmit = () => {
-
-    if (file && name != "" && price != "" && wholesalePrice != "" && maxOrder != "") {
+    console.log("jijija")
+    if (name != "" && price != "" && wholesalePrice != "" && maxOrder != "") {
       onSubmit({
         id: product?.id ?? '',
         image: file,
@@ -58,7 +60,8 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
         price: price,
         maxOrder: maxOrder,
         subcategoryId: subcategoryId,
-        wholesalePrice: wholesalePrice
+        wholesalePrice: wholesalePrice,
+        description:description
       });
       handleClosing(); // Close the modal after submitting
 
@@ -67,6 +70,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
   useEffect(() => {
     if (product) {
       setAssetName(product.name),
+      setDescription(product.description??''),
         setPrice(product.price.toString())
       setMaxOrder(product.maxOrder.toString())
       setWholesalePrice(product.wholesalePrice.toString())
@@ -111,6 +115,19 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
             inputProps={{
               maxLength: 30
             }}
+          />
+          <TextField
+            fullWidth
+            label="Descripción"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            margin="normal"
+            variant="outlined"
+            multiline
+            inputProps={{
+              maxLength: 300
+            }}
+            rows={4}
           />
           <TextField
             fullWidth

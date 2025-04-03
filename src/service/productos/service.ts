@@ -21,7 +21,7 @@ export async function GetProduct(id: string): Promise<Response<Product>> {
     console.log("ID: ", id);
     return await request({
       method: "GET",
-      endpoint: `/api/Products/${id}`
+      endpoint: `/api/Product/${id}`
     });
   } catch (err) {
     return {

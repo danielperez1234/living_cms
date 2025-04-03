@@ -6,6 +6,7 @@ export interface Product {
   maxOrder: number;
   imageUrlOriginal: string;
   imageUrlSmall: string;
+  description?: string | undefined;
 }
 export interface ProductPost {
   image: File | null;
@@ -14,6 +15,7 @@ export interface ProductPost {
   wholesalePrice: string;
   maxOrder: string;
   subcategoryId: string;
+  description?: string | undefined;
 }
 export interface ProductPut {
   id: string;
@@ -23,4 +25,5 @@ export interface ProductPut {
   wholesalePrice: string;
   maxOrder: string;
   subcategoryId: string;
+  description?: string | undefined;
 }

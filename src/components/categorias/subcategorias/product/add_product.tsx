@@ -24,10 +24,11 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
   open,
   onClose,
   onSubmit,
-  accept,subcategoryId
+  accept, subcategoryId
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [name, setAssetName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [price, setPrice] = useState<string>("0");
   const [wholesalePrice, setWholesalePrice] = useState<string>("0");
   const [maxOrder, setMaxOrder] = useState<string>("0");
@@ -39,14 +40,15 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
   };
 
   const handleSubmit = () => {
-    if (file && name != "" && price != ""&& wholesalePrice != ""&& maxOrder != "") {
+    if (file && name != "" && price != "" && wholesalePrice != "" && maxOrder != "") {
       onSubmit({
         image: file,
         name: name,
         price: price,
         maxOrder: maxOrder,
-        subcategoryId:subcategoryId,
-        wholesalePrice:wholesalePrice
+        subcategoryId: subcategoryId,
+        wholesalePrice: wholesalePrice,
+        description:description
       });
       onClose(); // Close the modal after submitting
     }
@@ -94,6 +96,19 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
           />
           <TextField
             fullWidth
+            label="Descripción"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            margin="normal"
+            variant="outlined"
+            multiline
+            inputProps={{
+              maxLength: 300
+            }}
+            rows={4}
+          />
+          <TextField
+            fullWidth
             label="Precio"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
@@ -101,7 +116,7 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
             variant="outlined"
             type="number"
             inputProps={{
-              
+
               maxLength: 100
             }}
             rows={4}
@@ -115,7 +130,7 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
             variant="outlined"
             type="number"
             inputProps={{
-              
+
               maxLength: 100
             }}
             rows={4}
@@ -129,12 +144,12 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
             variant="outlined"
             type="number"
             inputProps={{
-              
+
               maxLength: 100
             }}
             rows={4}
           />
-          
+
           <Button
             variant="contained"
             component="label"
