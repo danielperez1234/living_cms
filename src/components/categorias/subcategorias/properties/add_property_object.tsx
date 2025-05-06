@@ -8,30 +8,26 @@ import {
   Backdrop,
   Fade
 } from "@mui/material";
-import { ProductPost } from "@/service/productos/interface";
+import { PropertyPost } from "@/service/properties/interface";
 
-interface AddProductModalProps {
+interface AddPropertyObjectModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: ProductPost) => void;
+  onSubmit: (data: { text: string; imageFile?: File }) => void;
   accept: string;
   subcategoryId: string;
 }
 
 
 
-const AgregarProductModal: React.FC<AddProductModalProps> = ({
+const AgregarPropertyObjectModal: React.FC<AddPropertyObjectModalProps> = ({
   open,
   onClose,
   onSubmit,
   accept, subcategoryId
 }) => {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined>();
   const [name, setAssetName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [price, setPrice] = useState<string>("0");
-  const [wholesalePrice, setWholesalePrice] = useState<string>("0");
-  const [maxOrder, setMaxOrder] = useState<string>("0");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -40,15 +36,10 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
   };
 
   const handleSubmit = () => {
-    if (file && name != "" && price != "" && wholesalePrice != "" && maxOrder != "") {
+    if (  name != "" ) {
       onSubmit({
-        image: file,
-        name: name,
-        price: price,
-        maxOrder: maxOrder,
-        subcategoryId: subcategoryId,
-        wholesalePrice: wholesalePrice,
-        description:description
+        text: name,
+        imageFile: file,
       });
       onClose(); // Close the modal after submitting
     }
@@ -81,7 +72,7 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
           }}
         >
           <Typography variant="h6" component="h2">
-            Agregar Producto
+            Agregar Propiedad
           </Typography>
           <TextField
             fullWidth
@@ -94,61 +85,7 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
               maxLength: 30
             }}
           />
-          <TextField
-            fullWidth
-            label="Descripción"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            multiline
-            inputProps={{
-              maxLength: 300
-            }}
-            rows={4}
-          />
-          <TextField
-            fullWidth
-            label="Precio"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            type="number"
-            inputProps={{
-
-              maxLength: 100
-            }}
-            rows={4}
-          />
-          <TextField
-            fullWidth
-            label="Precio de Mayoreo"
-            value={wholesalePrice}
-            onChange={(e) => setWholesalePrice(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            type="number"
-            inputProps={{
-
-              maxLength: 100
-            }}
-            rows={4}
-          />
-          <TextField
-            fullWidth
-            label="Orden máxima"
-            value={maxOrder}
-            onChange={(e) => setMaxOrder(e.target.value)}
-            margin="normal"
-            variant="outlined"
-            type="number"
-            inputProps={{
-
-              maxLength: 100
-            }}
-            rows={4}
-          />
+          
 
           <Button
             variant="contained"
@@ -184,4 +121,4 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
   );
 };
 
-export default AgregarProductModal;
+export default AgregarPropertyObjectModal;

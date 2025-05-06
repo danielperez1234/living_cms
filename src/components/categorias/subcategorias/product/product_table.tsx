@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import useSubcategoriasStore from "@/service/subcategorias/store";
 
 import ImageIcon from "@mui/icons-material/Image";
+import TuneIcon from '@mui/icons-material/Tune';
 
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -27,6 +28,8 @@ import { Product } from "@/service/productos/interface";
 import AgregarProductModal from "./add_product";
 import ProductImageModal from "./product_image";
 import UpdateProductModal from "./update_product";
+import AddPropertyToProductModal from "./add_property_to_product";
+import usePropertyStore from "@/service/properties/store";
 const ProductsTable = ({
   idSubcategory
 }: {
@@ -39,10 +42,13 @@ const ProductsTable = ({
   const banners = useSubcategoriasStore(state => state.subcategoriaProducts);
   const productImages = useProductsStore(state => state.productImages);
   const producto = useProductsStore(state => state.producto);
+  const productOptionsResponse = useProductsStore(state => state.productOptionsResponse);
+  const propeties = usePropertyStore(state => state.properties);
   //Zustand functions
   const getSubcategoria = useSubcategoriasStore(state => state.getSubcategoriaProducts);
   const addProduct = useProductsStore(state => state.postProduct);
   const getProduct = useProductsStore(state => state.getProduct);
+  const getProductOptions = useProductsStore(state => state.getProductOptions);
   const updateProducto = useProductsStore(state => state.putProduct);
   const getProductImages = useProductsStore(state => state.getProductImages);
   // const postProduct = useProductsStore((state) => state.);
@@ -50,6 +56,7 @@ const ProductsTable = ({
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openAddPropertyToProductModal, setOpenAddPropertyToProductModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const [openImageModal, setOpenImageModal] = useState(false);
@@ -65,9 +72,14 @@ const ProductsTable = ({
     setSearchTerm(event.target.value.toLowerCase());
   };
   const handleEditProduct = (product: Product) => {
-    
+
     getProduct(product.id);
   }
+  const handleClickTune = (product: Product) => {
+    setSelectedProduct(product)
+    getProductOptions(product.id);
+  }
+  
   const handleClick = async (handleSubcategoria: Product) => {
     // await getSubcategoria(handleSubcategoria.id);
     // selectSubcategoria(handleSubcategoria);
@@ -81,11 +93,23 @@ const ProductsTable = ({
     getPages();
   }, [page])
   useEffect(() => {
-    setOpenUpdateModal(true);
+    if (producto) {
+      setOpenUpdateModal(true);
+
+    }
     setSelectedProduct(producto);
   }, [producto])
+  useEffect(() => {
+    if (productOptionsResponse) {
+      setOpenAddPropertyToProductModal(true);
+
+    }
+  }, [productOptionsResponse])
   return (
     <Box>
+      <AddPropertyToProductModal
+        open={openAddPropertyToProductModal && selectedProduct != undefined}
+        onClose={() => setOpenAddPropertyToProductModal(false)} onSubmit={function (): void {} } productOptions={productOptionsResponse ?? []} options={propeties} producto={selectedProduct}         />
       <AgregarProductModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
@@ -139,8 +163,9 @@ const ProductsTable = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Subcategorias</TableCell>
+              <TableCell>Productos</TableCell>
               <TableCell>ID</TableCell>
+              <TableCell>acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -172,7 +197,14 @@ const ProductsTable = ({
                   >
                     <EditIcon />
                   </Button>
-
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      handleClickTune(product)
+                    }}
+                  >
+                    <TuneIcon />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

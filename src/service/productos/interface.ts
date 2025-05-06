@@ -1,4 +1,4 @@
-export interface Product {
+export interface  Product {
   id: string;
   name: string;
   price: number;
@@ -26,4 +26,9 @@ export interface ProductPut {
   maxOrder: string;
   subcategoryId: string;
   description?: string | undefined;
+}
+export interface GetProductOptionsResponse {
+  id:               string;
+  productId:        string;
+  propertyOptionId: string;
 }

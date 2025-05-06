@@ -5,20 +5,23 @@ import {
   GetAllProducts,
   GetProduct,
   GetProductImages,
+  GetProductOptions,
   PostProduct,
   PostProductImage,
   PutProduct
 } from "./service";
-import { Product, ProductPost, ProductPut } from "./interface";
+import { GetProductOptionsResponse, Product, ProductPost, ProductPut } from "./interface";
 
 interface ProductState {
   productos: Product[];
   producto?: Product;
+  productOptionsResponse?: GetProductOptionsResponse[];
   productImages?: string[];
   errorMsg: string | undefined;
   loading: boolean;
   getAllProducts: () => void;
   getProduct: (id: string) => void;
+  getProductOptions: (id: string) => void;
   getProductImages: (id: string) => void;
   deleteProductImage: (id: string,position:number) => Promise<void>;
   deleteProduct: (id: string) => void;
@@ -72,6 +75,30 @@ const useProductsStore = create<ProductState>()((set) => ({
           ...state,
           loading: false,
           producto: response.data
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
+      };
+    });
+  },
+  getProductOptions: async (id) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await GetProductOptions(id);
+    console.log("Prueba de producto: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
+          productOptionsResponse: response.data
         };
       });
       return;

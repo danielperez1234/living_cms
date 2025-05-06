@@ -103,7 +103,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
           }}
         >
           <Typography variant="h6" component="h2">
-            Agregar banner
+            Modificar Producto
           </Typography>
           <TextField
             fullWidth

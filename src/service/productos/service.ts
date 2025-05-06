@@ -1,6 +1,6 @@
 import { Response, request } from "../service";
 import "../service";
-import { Product, ProductPost, ProductPut } from "./interface";
+import { GetProductOptionsResponse, Product, ProductPost, ProductPut } from "./interface";
 
 export async function GetAllProducts(): Promise<Response<Product[]>> {
   try {
@@ -22,6 +22,20 @@ export async function GetProduct(id: string): Promise<Response<Product>> {
     return await request({
       method: "GET",
       endpoint: `/api/Product/${id}`
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}
+export async function GetProductOptions(id: string): Promise<Response<GetProductOptionsResponse[]>> {
+  try {
+    console.log("ID: ", id);
+    return await request({
+      method: "GET",
+      endpoint: `/api/Product/products/${id}/options`
     });
   } catch (err) {
     return {

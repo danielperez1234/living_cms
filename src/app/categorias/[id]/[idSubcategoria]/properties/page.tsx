@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import AppNavBar from "@/components/common/app_nav_bar/main";
 import useSubcategoriasStore from "@/service/subcategorias/store";
 import { Backdrop, CircularProgress, Typography } from "@mui/material";
-import ProductsTable from "@/components/categorias/subcategorias/product/product_table";
 import PropertiesTable from "@/components/categorias/subcategorias/properties/properties_table";
 
 interface SubcategoriesProps {
@@ -20,7 +19,12 @@ export default function Page({
   const subcategoria = useSubcategoriasStore(state=>state.subcategoriaProducts);
   const loading = useSubcategoriasStore((state) => state.loading);
 
-
+  useEffect(()=>{
+    console.log(subcategoria)
+  },[])
+  useEffect(()=>{
+    console.log(subcategoria)
+  },[subcategoria])
   return (
     <>
     {loading && <Backdrop
@@ -30,7 +34,6 @@ export default function Page({
         <CircularProgress color="primary" />
       </Backdrop>}
       <AppNavBar title={`${subcategoria?.datosPaginados.subcategoryName}`} />
-      <ProductsTable idSubcategory={idSubcategoria}/>
       <PropertiesTable idSubcategory={idSubcategoria}/>
     </>
   );

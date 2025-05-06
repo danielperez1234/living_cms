@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Fab,
   Paper,
   Table,
@@ -19,6 +20,7 @@ import { useRouter } from "next/navigation";
 import useSubcategoriasStore from "@/service/subcategorias/store";
 import AgregarSubCategoriaModal from "./add_subcategory";
 import useCategoriasStore from "@/service/categorias/store";
+import TuneIcon from '@mui/icons-material/Tune';
 
 import AddIcon from "@mui/icons-material/Add";
 const SubcategoriaTable = ({
@@ -26,28 +28,28 @@ const SubcategoriaTable = ({
   idCategory
 }: {
   subcategorias: Subcategoria;
-  idCategory:string
+  idCategory: string
 }) => {
   // Router
   const router = useRouter();
 
   // Zustand Hooks
-  const {  selectSubcategoria, subcategoria,selectedSubcategoria,clearSelection } =
+  const { selectSubcategoria, subcategoria, selectedSubcategoria, clearSelection } =
     useSubcategoriasStore((state) => ({
-      
+
       selectSubcategoria: state.selectSubcategoria,
       subcategoria: state.subcategoriaProducts,
       selectedSubcategoria: state.selectedSubcategoria,
-      clearSelection:state.clearSelection
+      clearSelection: state.clearSelection
     }));
-    const postsubcategoria = useSubcategoriasStore((state) => state.addSubcategoria);
-    const getSubcategorias = useSubcategoriasStore((state) => state.getSubcategorias);
+  const postsubcategoria = useSubcategoriasStore((state) => state.addSubcategoria);
+  const getSubcategorias = useSubcategoriasStore((state) => state.getSubcategorias);
   // Local Hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
-  const [idSelected,setIdSelected] = useState<string | undefined>()
-
+  const [idSelected, setIdSelected] = useState<string | undefined>()
+  const [clickOnProperties,setClickOnProperties]= useState(false);
   const filteredSubcategorias =
     banners?.subcategories?.filter((subcategoria) =>
       subcategoria.subcategoryName?.toLowerCase().includes(searchTerm)
@@ -58,25 +60,36 @@ const SubcategoriaTable = ({
   };
 
   const handleClick = async (handleSubcategoria: Subcategory) => {
+    //setClickOnProperties(false);
     selectSubcategoria(handleSubcategoria);
     setIdSelected(handleSubcategoria.id)
   };
-  useEffect(()=>{
+  const handleClickTune = async (handleSubcategoria: Subcategory) => {
+    setClickOnProperties(true);
+    console.log('aqui')
+    selectSubcategoria(handleSubcategoria);
+    setIdSelected(handleSubcategoria.id)
+  };
+  useEffect(() => {
     clearSelection();
-  },[])
-  useEffect(()=>{
+  }, [])
+  useEffect(() => {
     console.log("Subcategoria: ", selectedSubcategoria);
     if (idSelected) {
-      router.push(`/categorias/${idCategory}/${idSelected}`);
+      if (clickOnProperties) {
+        router.push(`/categorias/${idCategory}/${idSelected}/properties`);
+      } else {
+        router.push(`/categorias/${idCategory}/${idSelected}`);
+      }
     }
-  },[idSelected]);
+  }, [idSelected]);
   return (
     <Box>
       <AgregarSubCategoriaModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
         onSubmit={async (subCategory) => {
-          await postsubcategoria(subCategory,idCategory);
+          await postsubcategoria(subCategory, idCategory);
           getSubcategorias(idCategory);
         }}
       />
@@ -87,7 +100,7 @@ const SubcategoriaTable = ({
         margin="normal"
         onChange={handleSearchChange}
       />
-<Box
+      <Box
         display={"flex"}
         width={"96%"}
         marginX={"2%"}
@@ -124,6 +137,18 @@ const SubcategoriaTable = ({
                   {subcategoria.subcategoryName ?? "Sin nombre"}
                 </TableCell>
                 <TableCell>{subcategoria.id ?? "Sin descripcion"}</TableCell>
+                <TableCell>
+                  
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      handleClickTune(subcategoria)
+                    }}
+                  >
+                    <TuneIcon />
+                  </Button>
+
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
