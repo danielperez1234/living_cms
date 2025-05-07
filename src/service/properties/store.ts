@@ -135,7 +135,7 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
       if (response.data) {
         set((state) => ({
           ...state,
-          options: [...state.options, response.data!],
+          options: [...(state.options??[]), response.data!],
           loading: false
         }));
       }
@@ -150,7 +150,7 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
       const response = await UpdateOption(optionId, data);
       if (response.data) {
         set((state) => ({
-          options: state.options.map(opt =>
+          options: (state.options??[]).map(opt =>
             opt.id === optionId ? { ...opt, ...response.data } : opt
           ),
           loading: false
