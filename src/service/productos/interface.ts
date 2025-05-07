@@ -32,3 +32,11 @@ export interface GetProductOptionsResponse {
   productId:        string;
   propertyOptionId: string;
 }
+export interface ProductOptionPost {
+  productId:        string;
+  propertyOptionId: string;
+}
+export interface ProductOptionDelete {
+  productId:        string;
+  optionId: string;
+}

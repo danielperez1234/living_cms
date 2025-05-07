@@ -2,15 +2,17 @@ import { create } from "zustand";
 import {
   DeleteProduct,
   DeleteProductImage,
+  DeleteProductOption,
   GetAllProducts,
   GetProduct,
   GetProductImages,
   GetProductOptions,
   PostProduct,
   PostProductImage,
+  PostProductOption,
   PutProduct
 } from "./service";
-import { GetProductOptionsResponse, Product, ProductPost, ProductPut } from "./interface";
+import { GetProductOptionsResponse, Product, ProductOptionDelete, ProductOptionPost, ProductPost, ProductPut } from "./interface";
 
 interface ProductState {
   productos: Product[];
@@ -26,6 +28,8 @@ interface ProductState {
   deleteProductImage: (id: string,position:number) => Promise<void>;
   deleteProduct: (id: string) => void;
   setProducts: (x: Product[]) => void;
+  postProductOption: (x: ProductOptionPost) => void;
+  deleteProductOption: (x: ProductOptionDelete) => void;
   postProduct: (x: ProductPost) => void;
   putProduct: (x: ProductPut) => void;
   postProductImage: (id: string,image:File) => Promise<void>;
@@ -167,6 +171,52 @@ const useProductsStore = create<ProductState>()((set) => ({
           ...state,
           loading: false,
           producto: response.data
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
+      };
+    });
+  },
+  postProductOption: async (prod) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await PostProductOption(prod);
+    console.log("Prueba de post producto option: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
+        };
+      });
+      return;
+    }
+    set((state) => {
+      return {
+        ...state,
+        loading: false
+      };
+    });
+  },
+  deleteProductOption: async (prod) => {
+    set((state) => ({
+      ...state,
+      loading: true
+    }));
+    const response = await DeleteProductOption(prod);
+    console.log("Prueba de delete+ producto option: ", response.data);
+    if (response.status < 300 && response.data) {
+      set((state) => {
+        return {
+          ...state,
+          loading: false,
         };
       });
       return;

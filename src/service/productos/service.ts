@@ -1,6 +1,6 @@
 import { Response, request } from "../service";
 import "../service";
-import { GetProductOptionsResponse, Product, ProductPost, ProductPut } from "./interface";
+import { ProductOptionDelete, GetProductOptionsResponse, ProductOptionPost, Product, ProductPost, ProductPut } from "./interface";
 
 export async function GetAllProducts(): Promise<Response<Product[]>> {
   try {
@@ -63,6 +63,39 @@ export async function DeleteProduct(id: string): Promise<Response<Product[]>> {
     return await request({
       method: "DELETE",
       endpoint: `/api/Products/${id}`
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}
+export async function PostProductOption(productPost: ProductOptionPost) {
+  try {
+        return await request<any>({
+      method: "POST",
+      endpoint: `/api/Product/products/${productPost.productId}/options`,
+      headers: {
+        "Content-Type": `application/json;`
+      },
+      body: JSON.stringify(productPost)
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}
+export async function DeleteProductOption(productOptionDelete: ProductOptionDelete) {
+  try {
+        return await request<any>({
+      method: "DELETE",
+      endpoint: `/api/Product/products/${productOptionDelete.productId}/options/${productOptionDelete.optionId}`,
+      headers: {
+        "Content-Type": `application/json;`
+      },
     });
   } catch (err) {
     return {

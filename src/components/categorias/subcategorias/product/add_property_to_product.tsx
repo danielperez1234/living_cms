@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { Property, PropertyOption, PropertyPost } from "@/service/properties/interface";
 import { GetProductOptionsResponse, Product } from "@/service/productos/interface";
+import useProductsStore from "@/service/productos/store";
 
 interface AddPropertyToProductModalProps {
   open: boolean;
@@ -41,6 +42,8 @@ const AddPropertyToProductModal: React.FC<AddPropertyToProductModalProps> = ({
   //const [file, setFile] = useState<File | null>(null);
   const [localProductOptions, setLocalProductOpcion] = useState(productOptions.map(elselement=>elselement.propertyOptionId));
   const theme = useTheme()
+  const postProductOption = useProductsStore(state=> state.postProductOption)
+  const deleteProductOption = useProductsStore(state=> state.deleteProductOption)
   // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   if (event.target.files && event.target.files.length > 0) {
   //     setFile(event.target.files[0]);
@@ -49,7 +52,23 @@ const AddPropertyToProductModal: React.FC<AddPropertyToProductModalProps> = ({
 
   const handleSubmit = () => {
     if (  true) {
-      
+      productOptions.forEach(element=>{
+        if(!localProductOptions.some(localElement=> localElement == element.propertyOptionId)){
+            //Todo: delete
+            deleteProductOption({
+              productId: producto?.id??'',
+              optionId: element.id
+            })
+        }
+      })
+      localProductOptions.forEach(localElement=>{
+        if(!productOptions.some(element=> localElement == element.propertyOptionId)){
+            postProductOption({
+              productId: producto?.id??'',
+              propertyOptionId: localElement
+            })
+        }
+      })
       onClose(); // Close the modal after submitting
     }
   };
