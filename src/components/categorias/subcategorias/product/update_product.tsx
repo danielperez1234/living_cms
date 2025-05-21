@@ -113,7 +113,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
             margin="normal"
             variant="outlined"
             inputProps={{
-              maxLength: 30
+              maxLength: 300
             }}
           />
           <TextField

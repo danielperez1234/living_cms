@@ -91,7 +91,7 @@ const AgregarProductModal: React.FC<AddProductModalProps> = ({
             margin="normal"
             variant="outlined"
             inputProps={{
-              maxLength: 30
+              maxLength: 300
             }}
           />
           <TextField
