@@ -4,7 +4,7 @@ import AppNavBar from "@/components/common/app_nav_bar/main";
 import SimplePagination from "@/components/common/paginado";
 import { storageKeys } from "@/const/storage_keys";
 import useBannerStore from "@/service/banners/store";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Box, CircularProgress } from "@mui/material";
 import Image from "next/image";
 import { useEffect } from "react";
 
@@ -27,8 +27,9 @@ export default function Page({ params }: { params: { banner: string } }) {
   return (
    <>
     <AppNavBar title={params.banner.replaceAll("_"," ")}/>
-    <BannerTable banners={banners} location={params.banner}/>
-    
+    <Box sx={{ maxWidth: '100%', width: '100%', overflow: 'hidden' }}>
+      <BannerTable banners={banners} location={params.banner}/>
+    </Box>
    </>
   );
 }

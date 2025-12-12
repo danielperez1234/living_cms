@@ -30,19 +30,30 @@ export default function AppNavBar({title}:{title:string}) {
         />
         
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{display:'flex', justifyContent:'space-between'}}>
+          <Toolbar disableGutters sx={{display:'flex', justifyContent:'space-between', px: { xs: 1, sm: 2 }}}>
             
-            <Box display={'flex'} >
+            <Box display={'flex'} alignItems={'center'} gap={{ xs: 1, sm: 2, md: 3 }}>
               <IconButton
-              sx={{mr:5}}
                 onClick={() => setDrawerOpen(true)}
-                >
+                sx={{ p: { xs: 0.5, sm: 1 } }}
+              >
                 <MenuIcon color="primary" />
               </IconButton>
-            <Typography variant="h1" color={AppColorsHex.black} textTransform={'capitalize'}>
-            {title}
-            </Typography>
-                </Box>
+              <Typography 
+                variant="h1" 
+                color={AppColorsHex.black} 
+                textTransform={'capitalize'}
+                sx={{
+                  fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2rem' },
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: { xs: '150px', sm: '300px', md: '100%' }
+                }}
+              >
+                {title}
+              </Typography>
+            </Box>
               
             <Box
              padding={0}
@@ -51,19 +62,18 @@ export default function AppNavBar({title}:{title:string}) {
              flexDirection={"row"}
              justifyContent={"end"}
              position={"relative"}
-
-             height={"50px"}
-             width={{ sm: "30%", md: "20%", xs: "50%" }}
+             height={{ xs: "40px", sm: "45px", md: "50px" }}
+             width={{ xs: "80px", sm: "120px", md: "150px" }}
+             flexShrink={0}
             >
               <Image
-                
                 objectPosition="right center"
                 objectFit="contain"
                 fill
                 src="/cms/marca/logo.png"
                 alt="logo Living"
+                priority
               />
-              
             </Box>
           </Toolbar>
         </Container>

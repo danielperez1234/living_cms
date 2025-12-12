@@ -10,6 +10,7 @@ import {  ApiPurchaseHistory, OrderStatus } from '@/service/user_manager/interfa
 import EditOrderModal from './edit_order_modal';
 import SimplePagination from '../common/paginado';
 import usePurchasesStore from '@/service/user_manager/store';
+import { useSnackbar } from '../common/snackbar_provider';
 
 
 
@@ -17,6 +18,7 @@ import usePurchasesStore from '@/service/user_manager/store';
 
 const OrdersTable: React.FC = () => {
   const {getPurchaseHistoryResponse, getPurchasesHistory,putPurchaseStatus, loading: isLoading,putStatusResonse} = usePurchasesStore(state=>state);
+  const { showSnackbar } = useSnackbar();
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<ApiPurchaseHistory | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,8 +41,10 @@ const OrdersTable: React.FC = () => {
     fetchAndSetOrders();
   }, []);
   useEffect(() => {
-    if(putStatusResonse == "Status actualizado correctamente.")
-    fetchAndSetOrders(page);
+    if(putStatusResonse == "Status actualizado correctamente.") {
+      showSnackbar(putStatusResonse, "success");
+      fetchAndSetOrders(page);
+    }
   }, [putStatusResonse]);
 
   const handleOpenModal = (order: ApiPurchaseHistory) => {
@@ -83,49 +87,51 @@ const OrdersTable: React.FC = () => {
   if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <Box>
+    <Box sx={{ px: { xs: 1, sm: 2, md: 3 } }}>
     <Paper sx={{ width: '100%', overflow: 'hidden', marginBottom:'20px' }}>
-      <Typography variant="h6" component="div" sx={{ p: 2 }}>
+      <Typography variant="h6" component="div" sx={{ p: { xs: 1.5, sm: 2 }, fontSize: { xs: '1rem', sm: '1.25rem' }, fontWeight: 'bold' }}>
         Pedidos Recientes
       </Typography>
-      <TableContainer sx={{ maxHeight: 600 }}>
-        <Table stickyHeader aria-label="tabla de pedidos recientes">
+      <TableContainer sx={{ maxHeight: { xs: '70vh', sm: 600 }, overflowX: 'auto' }}>
+        <Table stickyHeader aria-label="tabla de pedidos recientes" sx={{ minWidth: { xs: 500, sm: 650 } }}>
           <TableHead>
             <TableRow>
-              <TableCell>ID Pedido</TableCell>
-              <TableCell>Fecha</TableCell>
-              <TableCell>ID Usuario</TableCell>
-              <TableCell>Email Cliente</TableCell>
-              <TableCell align="right">Monto</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell align="center">Acciones</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>ID Pedido</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Fecha</TableCell>
+              <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>ID Usuario</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Email Cliente</TableCell>
+              <TableCell align="right" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Monto</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Estado</TableCell>
+              <TableCell align="center" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {getPurchaseHistoryResponse?.purchaseHistories.length === 0 && !isLoading ? (
                 <TableRow>
-                    <TableCell colSpan={7} align="center">No hay pedidos para mostrar.</TableCell>
+                    <TableCell colSpan={7} align="center" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 1.5, sm: 2 } }}>No hay pedidos para mostrar.</TableCell>
                 </TableRow>
             ) : (
               getPurchaseHistoryResponse?.purchaseHistories.map((purchase) => (
                 <TableRow hover key={purchase.purchaseHistoryId} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>
                     {purchase.purchaseHistoryId.substring(0, 8)}...
                     </TableCell>
-                    <TableCell>{new Date().toLocaleDateString()}</TableCell> 
+                    <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>{new Date().toLocaleDateString()}</TableCell> 
                     {/* //purchase.createdAt */}
-                    <TableCell>{purchase.userId.substring(0,8)}...</TableCell>
-                    <TableCell>{purchase.purchaseDetail.email}</TableCell>
-                    <TableCell align="right">${purchase.amount.toFixed(2)}</TableCell>
-                    <TableCell>
-                    <Chip label={purchase.status} color={getStatusChipColor(purchase.status)} size="small" />
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>{purchase.userId.substring(0,8)}...</TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>{purchase.purchaseDetail.email}</TableCell>
+                    <TableCell align="right" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>${purchase.amount.toFixed(2)}</TableCell>
+                    <TableCell sx={{ py: { xs: 0.75, sm: 1 } }}>
+                    <Chip label={purchase.status} color={getStatusChipColor(purchase.status)} size="small" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }} />
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" sx={{ py: { xs: 0.75, sm: 1 } }}>
                     <Button
                         variant="text"
+                        size="small"
                         onClick={() => handleOpenModal(purchase)}
+                        sx={{ minWidth: { xs: 32, sm: 40 }, p: { xs: 0.5, sm: 1 } }}
                     >
-                        <EditIcon />
+                        <EditIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
                     </Button>
                     </TableCell>
                 </TableRow>

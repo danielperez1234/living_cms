@@ -7,9 +7,11 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSnackbar } from "@/components/common/snackbar_provider";
 
 export default function Home() {
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
   const [user, setUser] = useState<UserLoginRequest>({
     email: "",
@@ -18,13 +20,14 @@ export default function Home() {
   return (
     <main>
       <Box
-        my={10}
+        my={{ xs: 3, sm: 5, md: 10 }}
         display={"flex"}
         flexDirection={"row"}
         justifyContent={"center"}
         position={"relative"}
-        height={"100px"}
-        width={{ sm: "100%" }}
+        height={{ xs: "60px", sm: "80px", md: "100px" }}
+        width={{ xs: "100%", sm: "100%" }}
+        px={{ xs: 2, sm: 0 }}
       >
         <Image
           objectPosition="center"
@@ -36,14 +39,15 @@ export default function Home() {
       </Box>
       <Divider />
       <Box
-        mt={10}
-        marginX={"30%"}
+        mt={{ xs: 3, sm: 5, md: 10 }}
+        marginX={{ xs: "5%", sm: "20%", md: "30%" }}
+        px={{ xs: 2, sm: 3 }}
         display={"flex"}
         alignItems={"center"}
         flexDirection={"column"}
       >
-        <Typography variant="h1">Iniciar Sesión</Typography>
-        <Box height={30} />
+        <Typography variant="h1" sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }, fontWeight: 'bold', textAlign: 'center' }}>Iniciar Sesión</Typography>
+        <Box height={{ xs: 20, sm: 25, md: 30 }} />
         <form style={{ width: "100%" }}>
           <TextField
             fullWidth
@@ -51,6 +55,8 @@ export default function Home() {
             label="Correo"
             type="email"
             variant="standard"
+            size="small"
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
             onChange={(e) => {+
               setUser((value) => {
                 return {
@@ -60,13 +66,15 @@ export default function Home() {
               });
             }}
           />
-          <Box height={20} />
+          <Box height={{ xs: 15, sm: 20 }} />
 
           <TextField
             fullWidth
             type="password"
             id="standard-helperText"
             label="Contraseña"
+            size="small"
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
             onChange={(e) => {+
               setUser((value) => {
                 return {
@@ -78,17 +86,22 @@ export default function Home() {
             variant="standard"
           />
           {errorMsg && (
-            <Typography color={"error"} variant="body1">
+            <Typography color={"error"} variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' }, textAlign: 'center' }}>
               {errorMsg}
             </Typography>
           )}
-          <Box height={20} />
+          <Box height={{ xs: 15, sm: 20 }} />
           <Button
+            fullWidth
+            variant="contained"
+            size="medium"
+            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' }, py: { xs: 1, sm: 1.5 }, fontWeight: 'bold' }}
             onClick={async () => {
               const response = await Login(user);
 
               if (response.status == 401) {
                 setErrorMsg("Usuario o contraseña incorrectos.");
+                showSnackbar("Usuario o contraseña incorrectos", "error");
               } else if (response.status == 200 && response.data) {
                 localStorage.setItem(storageKeys.token, response.data.token);
                 localStorage.setItem(storageKeys.email, response.data.email);
@@ -96,7 +109,12 @@ export default function Home() {
                   storageKeys.userName,
                   response.data.userName
                 );
-                router.push("/banners");
+                showSnackbar(`¡Bienvenido ${response.data.userName}!`, "success");
+                setTimeout(() => {
+                  router.push("/banners");
+                }, 1000);
+              } else {
+                showSnackbar("Error al iniciar sesión. Intenta de nuevo.", "error");
               }
             }}
           >

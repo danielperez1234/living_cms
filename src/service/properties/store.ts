@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Property, PropertyOption } from "./interface";
-import { GetSubcategoryProperties, PostSubcategoryProperty, UpdateProperty } from "./services/properties";
+import { GetSubcategoryProperties, PostSubcategoryProperty, UpdateProperty, DeleteProperty } from "./services/properties";
 import { AddPropertyOption, GetOptionById, GetPropertyOptions, UpdateOption } from "./services/options";
 interface PropertyStore {
   // State
@@ -8,11 +8,16 @@ interface PropertyStore {
   options: PropertyOption[] | undefined;
   loading: boolean;
   error: string | null;
+  createResponse: string | undefined;
+  updateResponse: string | undefined;
+  deleteResponse: string | undefined;
+  addOptionResponse: string | undefined;
 
   // Property Actions
   fetchSubcategoryProperties: (subcategoryId: string) => Promise<void>;
   createProperty: (subcategoryId: string, name: string) => Promise<void>;
   updateProperty: (propertyId: string, data: { subcategoryId: string; name: string }) => Promise<void>;
+  deleteProperty: (propertyId: string) => Promise<void>;
 
   // Option Actions
   fetchPropertyOptions: (propertyId: string) => Promise<void>;
@@ -26,6 +31,7 @@ interface PropertyStore {
 
   // Utility
   resetError: () => void;
+  clearResponses: () => void;
 }
 export const usePropertyStore = create<PropertyStore>((set, get) => ({
   // Initial state
@@ -33,6 +39,10 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
   options: undefined,
   loading: false,
   error: null,
+  createResponse: undefined,
+  updateResponse: undefined,
+  deleteResponse: undefined,
+  addOptionResponse: undefined,
 
   // Property actions
   fetchSubcategoryProperties: async (subcategoryId) => {
@@ -51,15 +61,18 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
   },
 
   createProperty: async (subcategoryId, name) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, createResponse: undefined });
     try {
       const response = await PostSubcategoryProperty(subcategoryId, name);
       if (response.data) {
         set((state) => ({
           ...state,
           properties: [...state.properties, response.data!],
-          loading: false
+          loading: false,
+          createResponse: "Propiedad creada exitosamente"
         }));
+      } else {
+        set({ error: response.error || "Error al crear propiedad", loading: false });
       }
     } catch (err) {
       set({ error: err instanceof Error ? err.message : String(err), loading: false });
@@ -67,7 +80,7 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
   },
 
   updateProperty: async (propertyId, data) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, updateResponse: undefined });
     try {
       const response = await UpdateProperty(propertyId, data);
       if (response.data) {
@@ -75,8 +88,29 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
           properties: state.properties.map(prop =>
             prop.id === propertyId ? { ...prop, ...response.data } : prop
           ),
-          loading: false
+          loading: false,
+          updateResponse: "Propiedad actualizada exitosamente"
         }));
+      } else {
+        set({ error: response.error || "Error al actualizar propiedad", loading: false });
+      }
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : String(err), loading: false });
+    }
+  },
+
+  deleteProperty: async (propertyId) => {
+    set({ loading: true, error: null, deleteResponse: undefined });
+    try {
+      const response = await DeleteProperty(propertyId);
+      if (response.status < 300) {
+        set((state) => ({
+          properties: state.properties.filter(prop => prop.id !== propertyId),
+          loading: false,
+          deleteResponse: "Propiedad eliminada exitosamente"
+        }));
+      } else {
+        set({ error: response.error || "Error al eliminar propiedad", loading: false });
       }
     } catch (err) {
       set({ error: err instanceof Error ? err.message : String(err), loading: false });
@@ -129,15 +163,18 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
   },
 
   addOption: async (propertyId, data) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, addOptionResponse: undefined });
     try {
       const response = await AddPropertyOption(propertyId, data);
       if (response.data) {
         set((state) => ({
           ...state,
           options: [...(state.options??[]), response.data!],
-          loading: false
+          loading: false,
+          addOptionResponse: "Opción agregada exitosamente"
         }));
+      } else {
+        set({ error: response.error || "Error al agregar opción", loading: false });
       }
     } catch (err) {
       set({ error: err instanceof Error ? err.message : String(err), loading: false });
@@ -162,6 +199,12 @@ export const usePropertyStore = create<PropertyStore>((set, get) => ({
   },
 
   // Utility
-  resetError: () => set({ error: null })
+  resetError: () => set({ error: null }),
+  clearResponses: () => set({
+    createResponse: undefined,
+    updateResponse: undefined,
+    deleteResponse: undefined,
+    addOptionResponse: undefined
+  })
 }));
 export default usePropertyStore;

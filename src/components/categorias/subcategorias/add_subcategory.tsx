@@ -49,11 +49,15 @@ const AgregarSubCategoriaModal: React.FC<AddAssetModalProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: { xs: '90vw', sm: '500px', md: '600px' },
+            maxWidth: '95vw',
+            maxHeight: { xs: '90vh', sm: '95vh' },
+            overflow: 'auto',
             bgcolor: "background.paper",
             border: "2px solid #000",
-            boxshadow: 24,
-            p: 4,
+            boxShadow: 24,
+            p: { xs: 2, sm: 3, md: 4 },
+            borderRadius: 2
           }}
         >
           <Typography variant="h6" component="h2">

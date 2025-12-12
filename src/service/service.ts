@@ -39,7 +39,7 @@ export async function request<T>({
         "Content-Type": formData ? "multipart/form-data" : "application/json",
         ...headers
       },
-      data: formData || body
+      ...(formData || body ? { data: formData || body } : {})
     };
 
     const response: AxiosResponse<T> = await axios(config);

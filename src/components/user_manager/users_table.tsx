@@ -7,63 +7,73 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
- interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'customer';
-  createdAt: string; // Fecha de registro
-  lastLogin?: string; // Opcional: último inicio de sesión
-}
-// Mock de datos de usuarios
-const MOCK_USERS: User[] = [
-  { id: "498327ca-853e-4c71-8e97-e8ffb3e082ff", name: "Daniel Najera", email: "dn2@g.com", role: "admin", createdAt: new Date(Date.now() - 86400000 * 10).toISOString(), lastLogin: new Date().toISOString() },
-  { id: "user002", name: "Jane Doe", email: "jane.doe@example.com", role: "customer", createdAt: new Date(Date.now() - 86400000 * 5).toISOString() },
-  { id: "user003", name: "John Smith", email: "john.smith@example.com", role: "customer", createdAt: new Date(Date.now() - 86400000 * 20).toISOString(), lastLogin: new Date(Date.now() - 86400000 * 1).toISOString() },
-  // ... más usuarios
-];
-
-// Simulación de llamada API
-const fetchUsersAPI = (): Promise<User[]> => {
-  return new Promise(resolve => setTimeout(() => resolve(MOCK_USERS), 800));
-};
+import { User } from '@/service/users/interface';
+import useUsersStore from '@/service/users/store';
+import { useSnackbar } from '../common/snackbar_provider';
+import EditUserModal from './edit_user_modal';
 
 const UsersTable: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    users,
+    loading: isLoading,
+    updateResponse,
+    deleteResponse,
+    error: storeError,
+    getAllUsers,
+    clearResponses
+  } = useUsersStore();
+
+  const { showSnackbar } = useSnackbar();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const data = await fetchUsersAPI();
-        setUsers(data);
-      } catch (err) {
-        setError('Error al cargar los usuarios.');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUsers();
+    getAllUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleEditUser = (userId: string) => {
-    console.log(`Editar usuario: ${userId}`);
-    // Aquí abrirías un modal o navegarías a una página de edición de usuario
-    alert(`FUNCIONALIDAD PENDIENTE: Editar usuario ${userId}`);
+  useEffect(() => {
+    if (updateResponse) {
+      showSnackbar(updateResponse, "success");
+      getAllUsers();
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateResponse]);
+
+  useEffect(() => {
+    if (deleteResponse) {
+      showSnackbar(deleteResponse, "success");
+      getAllUsers();
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteResponse]);
+
+  useEffect(() => {
+    if (storeError) {
+      showSnackbar(storeError, "error");
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeError]);
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
   };
 
   const handleDeleteUser = (userId: string) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar al usuario ${userId}?`)) {
-      console.log(`Eliminar usuario: ${userId}`);
-      // Lógica de eliminación y actualización del estado
-      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-      alert(`FUNCIONALIDAD PENDIENTE (simulado): Usuario ${userId} eliminado`);
+    const user = users?.find(u => u.id === userId);
+    if (window.confirm(`¿Estás seguro de que quieres eliminar al usuario ${user?.userName || userId}?`)) {
+      useUsersStore.getState().deleteUser(userId);
     }
   };
 
@@ -76,58 +86,61 @@ const UsersTable: React.FC = () => {
     setPage(0);
   };
 
-  const paginatedUsers = users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedUsers = users?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) || [];
 
   if (isLoading) return <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}><CircularProgress /></Box>;
-  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <Typography variant="h6" component="div" sx={{ p: 2 }}>
+      <Typography variant="h6" component="div" sx={{ p: { xs: 1.5, sm: 2 }, fontSize: { xs: '1rem', sm: '1.25rem' }, fontWeight: 'bold' }}>
         Gestión de Usuarios
       </Typography>
-      <TableContainer sx={{ maxHeight: 600 }}>
-        <Table stickyHeader aria-label="tabla de usuarios">
+      <TableContainer sx={{ maxHeight: { xs: '70vh', sm: 600 }, overflowX: 'auto' }}>
+        <Table stickyHeader aria-label="tabla de usuarios" sx={{ minWidth: { xs: 450, sm: 650 } }}>
           <TableHead>
             <TableRow>
-              <TableCell>ID Usuario</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Rol</TableCell>
-              <TableCell>Registrado</TableCell>
-              <TableCell>Último Acceso</TableCell>
-              <TableCell align="center">Acciones</TableCell>
+              <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>ID Usuario</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Nombre</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Email</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Rol</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Registrado</TableCell>
+              <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Estado</TableCell>
+              <TableCell align="center" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, fontWeight: 'bold', py: { xs: 1, sm: 1.5 } }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paginatedUsers.length === 0 && !isLoading ? (
                 <TableRow>
-                    <TableCell colSpan={7} align="center">No hay usuarios para mostrar.</TableCell>
+                    <TableCell colSpan={7} align="center" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 1.5, sm: 2 } }}>No hay usuarios para mostrar.</TableCell>
                 </TableRow>
             ) : (
                 paginatedUsers.map((user) => (
                 <TableRow hover key={user.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" sx={{ display: { xs: 'none', sm: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>
                     {user.id.substring(0, 8)}...
                     </TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                    <Chip label={user.role} color={user.role === 'admin' ? 'secondary' : 'default'} size="small" />
+                    <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>{user.userName}</TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>{user.email}</TableCell>
+                    <TableCell sx={{ py: { xs: 0.75, sm: 1 } }}>
+                    <Chip label={user.role} color={user.role === 'SuperAdmin' ? 'secondary' : 'default'} size="small" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }} />
                     </TableCell>
-                    <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
-                    <TableCell>{user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'N/A'}</TableCell>
-                    <TableCell align="center">
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, py: { xs: 0.75, sm: 1 } }}>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell sx={{ py: { xs: 0.75, sm: 1 } }}>
+                    <Chip label={user.active ? 'Activo' : 'Inactivo'} color={user.active ? 'success' : 'default'} size="small" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }} />
+                    </TableCell>
+                    <TableCell align="center" sx={{ py: { xs: 0.75, sm: 1 } }}>
+                    <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, justifyContent: 'center', flexWrap: 'wrap' }}>
                     <Tooltip title="Editar Usuario">
-                        <IconButton onClick={() => handleEditUser(user.id)} color="primary" size="small">
-                        <EditIcon />
+                        <IconButton onClick={() => handleEditUser(user)} color="primary" size="small" sx={{ p: { xs: 0.5, sm: 0.75 } }}>
+                        <EditIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Eliminar Usuario">
-                        <IconButton onClick={() => handleDeleteUser(user.id)} color="error" size="small">
-                        <DeleteIcon />
+                        <IconButton onClick={() => handleDeleteUser(user.id)} color="error" size="small" sx={{ p: { xs: 0.5, sm: 0.75 } }}>
+                        <DeleteIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
                         </IconButton>
                     </Tooltip>
+                    </Box>
                     </TableCell>
                 </TableRow>
                 ))
@@ -138,12 +151,18 @@ const UsersTable: React.FC = () => {
        <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={users.length}
+        count={users?.length || 0}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         labelRowsPerPage="Usuarios por página:"
+        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+      />
+      <EditUserModal
+        open={isModalOpen}
+        user={selectedUser}
+        onClose={handleCloseModal}
       />
     </Paper>
   );

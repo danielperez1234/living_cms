@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -6,49 +6,66 @@ import {
   Button,
   Typography,
   Backdrop,
-  Fade
+  Fade,
+  Alert,
+  CircularProgress
 } from "@mui/material";
-import { PropertyPost } from "@/service/properties/interface";
+import usePropertyStore from "@/service/properties/store";
 
 interface AddPropertyModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: PropertyPost) => void;
-  accept: string;
   subcategoryId: string;
 }
-
-
 
 const AgregarPropertyModal: React.FC<AddPropertyModalProps> = ({
   open,
   onClose,
-  onSubmit,
-  accept, subcategoryId
+  subcategoryId
 }) => {
-  //const [file, setFile] = useState<File | null>(null);
-  const [name, setAssetName] = useState<string>("");
+  const { createProperty, loading, createResponse, error: storeError } = usePropertyStore();
 
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.files && event.target.files.length > 0) {
-  //     setFile(event.target.files[0]);
-  //   }
-  // };
+  const [name, setAssetName] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+
+  // Close modal when create is successful
+  useEffect(() => {
+    if (createResponse && open) {
+      setAssetName("");
+      onClose();
+    }
+  }, [createResponse, open, onClose]);
+
+  // Show backend errors
+  useEffect(() => {
+    if (storeError && open) {
+      setError(storeError);
+    }
+  }, [storeError, open]);
 
   const handleSubmit = () => {
-    if (  name != "" ) {
-      onSubmit({
-        name: name,
-        subcategoryId: subcategoryId,
-      });
-      onClose(); // Close the modal after submitting
+    if (name.trim() === "") {
+      setError("El nombre de la propiedad es obligatorio");
+      return;
+    }
+
+    setError(null);
+    createProperty(subcategoryId, name);
+    // El modal se cerrará automáticamente cuando createResponse cambie
+  };
+
+  const handleClose = () => {
+    if (!loading) {
+      setAssetName("");
+      setError(null);
+      onClose();
     }
   };
 
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{
@@ -64,16 +81,27 @@ const AgregarPropertyModal: React.FC<AddPropertyModalProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: { xs: '90vw', sm: '500px', md: '600px' },
+            maxWidth: '95vw',
+            maxHeight: { xs: '90vh', sm: '95vh' },
+            overflow: 'auto',
             bgcolor: "background.paper",
             border: "2px solid #000",
             boxShadow: 24,
-            p: 4
+            p: { xs: 2, sm: 3, md: 4 },
+            borderRadius: 2
           }}
         >
-          <Typography variant="h6" component="h2">
+          <Typography variant="h6" component="h2" mb={2}>
             Agregar Propiedad
           </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <TextField
             fullWidth
             label="Nombre"
@@ -81,39 +109,23 @@ const AgregarPropertyModal: React.FC<AddPropertyModalProps> = ({
             onChange={(e) => setAssetName(e.target.value)}
             margin="normal"
             variant="outlined"
+            required
+            disabled={loading}
             inputProps={{
               maxLength: 30
             }}
           />
-          
 
-          {/* <Button
-            variant="contained"
-            component="label"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Seleccionar archivo
-            <input
-              type={"file"}
-              hidden
-              accept={accept}
-              onChange={handleFileChange}
-            />
-          </Button>
-          {file && (
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              Selected File: {file.name}
-            </Typography>
-          )} */}
           <Button
             variant="contained"
             color="primary"
             onClick={handleSubmit}
             fullWidth
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} /> : null}
             sx={{ mt: 2 }}
           >
-            Agregar
+            {loading ? "Guardando..." : "Agregar"}
           </Button>
         </Box>
       </Fade>

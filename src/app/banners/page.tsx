@@ -36,14 +36,14 @@ const BannersList = () => {
   return (
     <>
       <AppNavBar title="Banners" />
-      <Box display={"flex"} justifyContent={"center"} sx={{ padding: 2 }}>
-        <Grid container spacing={2} maxWidth={"1000px"}>
+      <Box display={"flex"} justifyContent={"center"} sx={{ padding: { xs: 1, sm: 2, md: 3 } }}>
+        <Grid container spacing={{ xs: 1.5, sm: 2 }} maxWidth={"1000px"}>
           {banners.map((banner) => (
             <Grid item xs={12} sm={6} md={4} key={banner.id}>
-              <Card>
-                <CardActionArea onClick={() => handleRedirect(banner.route)}>
-                  <CardContent>
-                    <Typography variant="h5" component="div">
+              <Card elevation={2}>
+                <CardActionArea onClick={() => handleRedirect(banner.route)} sx={{ p: { xs: 1, sm: 1.5 } }}>
+                  <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                    <Typography variant="h5" component="div" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' }, fontWeight: 'bold' }}>
                       {banner.title}
                     </Typography>
                   </CardContent>

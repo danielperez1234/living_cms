@@ -1,5 +1,6 @@
 import AppNavBar from "@/components/common/app_nav_bar/main";
 import AppTheme from "@/components/common/app_theme";
+import { SnackbarProvider } from "@/components/common/snackbar_provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppTheme>
-          {children}
+          <SnackbarProvider>
+            {children}
+          </SnackbarProvider>
         </AppTheme>
       </body>
     </html>

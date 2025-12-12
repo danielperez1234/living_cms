@@ -97,3 +97,24 @@ export async function UpdateProperty(
     };
   }
 }
+
+export async function DeleteProperty(
+  propertyId: string
+): Promise<Response<void>> {
+  try {
+    const token = localStorage.getItem(storageKeys.token);
+    return await request<void>({
+      method: "DELETE",
+      endpoint: `/properties/${propertyId}`,
+      headers: {
+        "accept": "*/*",
+        "authorization": `bearer ${token}`
+      }
+    });
+  } catch (err) {
+    return {
+      status: 500,
+      error: `${err}`
+    };
+  }
+}

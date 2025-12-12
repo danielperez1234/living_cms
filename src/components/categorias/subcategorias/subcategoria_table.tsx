@@ -84,7 +84,7 @@ const SubcategoriaTable = ({
     }
   }, [idSelected]);
   return (
-    <Box>
+    <Box sx={{ width: '100%', maxWidth: '100vw', px: { xs: 0.5, sm: 1, md: 2 }, pb: 3, boxSizing: 'border-box' }}>
       <AgregarSubCategoriaModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
@@ -93,37 +93,46 @@ const SubcategoriaTable = ({
           getSubcategorias(idCategory);
         }}
       />
-      <TextField
-        label="Buscar por nombre"
-        variant="outlined"
-        fullWidth
-        margin="normal"
+      <Box sx={{ px: { xs: 0.5, sm: 0 } }}>
+        <TextField
+          label="Buscar por nombre"
+          variant="outlined"
+          fullWidth
+          margin="normal"
         onChange={handleSearchChange}
+        sx={{ mb: 2 }}
       />
+      </Box>
       <Box
         display={"flex"}
-        width={"96%"}
-        marginX={"2%"}
+        width={"100%"}
         justifyContent={"end"}
-        bottom={100}
+        mb={2}
       >
         <Fab
           variant="extended"
           color="primary"
           aria-label="add"
           onClick={() => setOpenAddModal(true)}
+          size="medium"
+          sx={{
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2, md: 3 },
+            minHeight: { xs: '36px', sm: '40px' }
+          }}
         >
-          <AddIcon sx={{ mr: 1 }} />
+          <AddIcon sx={{ mr: { xs: 0.5, sm: 1 }, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           Agregar
         </Fab>
-        <Box width={"10px"} />
       </Box>
-      <TableContainer component={Paper}>
-        <Table>
+      <Box sx={{ px: { xs: 0.5, sm: 0 }, width: '100%' }}>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto', width: '100%' }}>
+          <Table sx={{ width: '100%' }} size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Subcategorias</TableCell>
-              <TableCell>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Subcategorías</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -132,31 +141,33 @@ const SubcategoriaTable = ({
                 key={subcategoria.id}
                 onClick={() => handleClick(subcategoria)}
                 style={{ cursor: "pointer" }}
+                hover
               >
-                <TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   {subcategoria.subcategoryName ?? "Sin nombre"}
                 </TableCell>
-                <TableCell>{subcategoria.id ?? "Sin descripcion"}</TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>{subcategoria.id ?? "Sin descripcion"}</TableCell>
                 <TableCell>
-                  
                   <Button
                     variant="text"
                     onClick={() => {
                       handleClickTune(subcategoria)
                     }}
+                    size="small"
+                    sx={{ minWidth: { xs: '32px', sm: '40px' }, p: { xs: 0.5, sm: 1 } }}
                   >
-                    <TuneIcon />
+                    <TuneIcon fontSize="small" />
                   </Button>
-
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box height={"20px"} />
-      <SimplePagination />
-
+      </Box>
+      <Box sx={{ mt: 2, px: { xs: 0.5, sm: 0 } }}>
+        <SimplePagination />
+      </Box>
     </Box>
   );
 };

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Fab,
   Paper,
   Table,
@@ -13,6 +12,8 @@ import {
   TableHead,
   TableRow,
   TextField,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import SimplePagination from "@/components/common/paginado";
 import { useRouter } from "next/navigation";
@@ -20,9 +21,9 @@ import useSubcategoriasStore from "@/service/subcategorias/store";
 
 import ImageIcon from "@mui/icons-material/Image";
 import TuneIcon from '@mui/icons-material/Tune';
-
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import useProductsStore from "@/service/productos/store";
 import { Product } from "@/service/productos/interface";
 import AgregarProductModal from "./add_product";
@@ -30,6 +31,8 @@ import ProductImageModal from "./product_image";
 import UpdateProductModal from "./update_product";
 import AddPropertyToProductModal from "./add_property_to_product";
 import usePropertyStore from "@/service/properties/store";
+import { useSnackbar } from "@/components/common/snackbar_provider";
+
 const ProductsTable = ({
   idSubcategory
 }: {
@@ -44,13 +47,23 @@ const ProductsTable = ({
   const producto = useProductsStore(state => state.producto);
   const productOptionsResponse = useProductsStore(state => state.productOptionsResponse);
   const propeties = usePropertyStore(state => state.properties);
+  const createResponse = useProductsStore(state => state.createResponse);
+  const updateResponse = useProductsStore(state => state.updateResponse);
+  const deleteResponse = useProductsStore(state => state.deleteResponse);
+  const error = useProductsStore(state => state.error);
+
   //Zustand functions
   const getSubcategoria = useSubcategoriasStore(state => state.getSubcategoriaProducts);
   const addProduct = useProductsStore(state => state.postProduct);
   const getProduct = useProductsStore(state => state.getProduct);
   const getProductOptions = useProductsStore(state => state.getProductOptions);
   const updateProducto = useProductsStore(state => state.putProduct);
+  const deleteProductFunc = useProductsStore(state => state.deleteProduct);
   const getProductImages = useProductsStore(state => state.getProductImages);
+  const clearResponses = useProductsStore(state => state.clearResponses);
+
+  // Snackbar
+  const { showSnackbar } = useSnackbar();
   // const postProduct = useProductsStore((state) => state.);
   // Local Hooks
   const [page, setPage] = useState(1);
@@ -105,28 +118,61 @@ const ProductsTable = ({
 
     }
   }, [productOptionsResponse])
+
+  // Handle create response
+  useEffect(() => {
+    if (createResponse) {
+      showSnackbar(createResponse, "success");
+      getSubcategoria(idSubcategory, page);
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createResponse]);
+
+  // Handle update response
+  useEffect(() => {
+    if (updateResponse) {
+      showSnackbar(updateResponse, "success");
+      getSubcategoria(idSubcategory, page);
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateResponse]);
+
+  // Handle delete response
+  useEffect(() => {
+    if (deleteResponse) {
+      showSnackbar(deleteResponse, "success");
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteResponse]);
+
+  // Handle errors
+  useEffect(() => {
+    if (error) {
+      showSnackbar(error, "error");
+      clearResponses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
   return (
-    <Box>
+    <Box sx={{ width: '100%', maxWidth: '100vw', px: { xs: 0.5, sm: 1, md: 2 }, pb: 3, boxSizing: 'border-box' }}>
       <AddPropertyToProductModal
         open={openAddPropertyToProductModal && selectedProduct != undefined}
         onClose={() => setOpenAddPropertyToProductModal(false)} onSubmit={function (): void {} } productOptions={productOptionsResponse ?? []} options={propeties} producto={selectedProduct}         />
       <AgregarProductModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
-        onSubmit={async (postProduct) => {
-          await addProduct(postProduct);
-          getSubcategoria(idSubcategory, page);
-        }} accept={"image/*"} subcategoryId={idSubcategory} />
+        subcategoryId={idSubcategory} />
       <UpdateProductModal
         open={openUpdateModal}
         onClose={() => {
           setOpenUpdateModal(false)
           setSelectedProduct(undefined);
         }}
-        onSubmit={async (postProduct) => {
-          await updateProducto(postProduct);
-          getSubcategoria(idSubcategory, page);
-        }} accept={"image/*"} subcategoryId={idSubcategory} product={selectedProduct} />
+        subcategoryId={idSubcategory}
+        product={selectedProduct} />
       <ProductImageModal
         id={productSelected ?? ''}
         images={productImages ?? []}
@@ -134,38 +180,46 @@ const ProductsTable = ({
         onClose={() => setOpenImageModal(false)}
         file={imageModal}
       />
-      <TextField
-        label="Buscar por nombre"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        onChange={handleSearchChange}
-      />
+      <Box sx={{ px: { xs: 0.5, sm: 0 } }}>
+        <TextField
+          label="Buscar por nombre"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          onChange={handleSearchChange}
+          sx={{ mb: 2 }}
+        />
+      </Box>
       <Box
         display={"flex"}
-        width={"96%"}
-        marginX={"2%"}
+        width={"100%"}
         justifyContent={"end"}
-        bottom={100}
+        mb={2}
       >
         <Fab
           variant="extended"
           color="primary"
           aria-label="add"
           onClick={() => setOpenAddModal(true)}
+          size="medium"
+          sx={{
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2, md: 3 },
+            minHeight: { xs: '36px', sm: '40px' }
+          }}
         >
-          <AddIcon sx={{ mr: 1 }} />
+          <AddIcon sx={{ mr: { xs: 0.5, sm: 1 }, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           Agregar
         </Fab>
-        <Box width={"10px"} />
       </Box>
-      <TableContainer component={Paper}>
-        <Table>
+      <Box sx={{ px: { xs: 0.5, sm: 0 }, width: '100%' }}>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto', width: '100%' }}>
+          <Table sx={{ width: '100%' }} size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Productos</TableCell>
-              <TableCell>ID</TableCell>
-              <TableCell>acciones</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Productos</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -174,46 +228,83 @@ const ProductsTable = ({
                 key={product.id}
                 onClick={() => handleClick(product)}
                 style={{ cursor: "pointer" }}
+                hover
               >
-                <TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   {product.name ?? "Sin nombre"}
                 </TableCell>
-                <TableCell>{product.id ?? "Sin descripcion"}</TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>{product.id ?? "Sin descripcion"}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="text"
-                    onClick={() => {
-                      setImageModal(product.imageUrlOriginal ?? "");
-                      setOpenImageModal(true);
-                      setProductSelected(product.id)
-                      getProductImages(product.id);
-                    }}
-                  >
-                    <ImageIcon />
-                  </Button>
-                  <Button
-                    variant="text"
-                    onClick={() => handleEditProduct(product)}
-                  >
-                    <EditIcon />
-                  </Button>
-                  <Button
-                    variant="text"
-                    onClick={() => {
-                      handleClickTune(product)
-                    }}
-                  >
-                    <TuneIcon />
-                  </Button>
+                  <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, justifyContent: 'center', flexWrap: 'nowrap' }}>
+                    <Tooltip title="Ver imágenes">
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImageModal(product.imageUrlOriginal ?? "");
+                          setOpenImageModal(true);
+                          setProductSelected(product.id)
+                          getProductImages(product.id);
+                        }}
+                        color="info"
+                        size="small"
+                        sx={{ p: { xs: 0.5, sm: 0.75 } }}
+                      >
+                        <ImageIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Editar">
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditProduct(product);
+                        }}
+                        color="primary"
+                        size="small"
+                        sx={{ p: { xs: 0.5, sm: 0.75 } }}
+                      >
+                        <EditIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Propiedades">
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClickTune(product);
+                        }}
+                        color="secondary"
+                        size="small"
+                        sx={{ p: { xs: 0.5, sm: 0.75 } }}
+                      >
+                        <TuneIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Eliminar">
+                      <IconButton
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (window.confirm(`¿Estás seguro de eliminar el producto "${product.name}"?`)) {
+                            await deleteProductFunc(product.id);
+                            getSubcategoria(idSubcategory, page);
+                          }
+                        }}
+                        color="error"
+                        size="small"
+                        sx={{ p: { xs: 0.5, sm: 0.75 } }}
+                      >
+                        <DeleteIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box height={"20px"} />
-      <SimplePagination onChange={(page) => setPage(page)} />
-
+      </Box>
+      <Box sx={{ mt: 2, px: { xs: 0.5, sm: 0 } }}>
+        <SimplePagination onChange={(page) => setPage(page)} />
+      </Box>
     </Box>
   );
 };

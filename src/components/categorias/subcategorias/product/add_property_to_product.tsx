@@ -77,7 +77,7 @@ const AddPropertyToProductModal: React.FC<AddPropertyToProductModalProps> = ({
       // Estos son los IDs seleccionados de OTRAS categorías, que deben conservarse.
       const idsFromOtherCategories = currentOverallSelectedIds.filter(id => {
         const currentCategory = options.find(prop => prop.id === categoryPropertyId);
-        if (currentCategory && currentCategory.options.some(opt => opt.id === id)) {
+        if (currentCategory && currentCategory.options && currentCategory.options.some(opt => opt.id === id)) {
           return false; // Pertenece a la categoría actual, se gestionará con `newlySelectedIdsInThisCategory`
         }
         return true; // Pertenece a otra categoría o no es una opción válida (debería conservarse si ya estaba)
@@ -174,7 +174,7 @@ const AddPropertyToProductModal: React.FC<AddPropertyToProductModalProps> = ({
             // IDs seleccionados específicamente para ESTA categoría (propertyElement)
             // a partir del estado general localProductOptions.
             const selectedIdsForThisCategory = localProductOptions.filter(selectedId =>
-              propertyElement.options.some(opt => opt.id === selectedId)
+              propertyElement.options && propertyElement.options.some(opt => opt.id === selectedId)
             );
 
             return (
@@ -189,7 +189,7 @@ const AddPropertyToProductModal: React.FC<AddPropertyToProductModalProps> = ({
                     // El event.target.value ya será string[]
                     // Hacemos un cast para asegurar el tipo con TypeScript
                     const castEvent = event as SelectChangeEvent<string[]>;
-                    if (propertyElement.options.length > 0) {
+                    if (propertyElement.options && propertyElement.options.length > 0) {
                       handleChange(castEvent, propertyElement.id);
                     }
                   }}
@@ -197,14 +197,14 @@ const AddPropertyToProductModal: React.FC<AddPropertyToProductModalProps> = ({
                   renderValue={(selected) => ( // `selected` es string[] (los selectedIdsForThisCategory)
                     <Box key={`renderValueChips_${propertyElement.id}`} sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map((id) => { // `id` es un string
-                        const optionObject = propertyElement.options.find(opt => opt.id === id);
+                        const optionObject = propertyElement.options && propertyElement.options.find(opt => opt.id === id);
                         return optionObject ? <Chip key={id} label={optionObject.text} /> : null;
                       })}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
-                  {propertyElement.options.map((option) => ( // `option` es una PropertyOption
+                  {propertyElement.options && propertyElement.options.map((option) => ( // `option` es una PropertyOption
                     <MenuItem
                       key={option.id}
                       value={option.id} // CORRECTO: Se pasa el ID (string/number) de la opción

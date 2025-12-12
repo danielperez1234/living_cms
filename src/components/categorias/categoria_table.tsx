@@ -56,7 +56,7 @@ const CategoriaTable = ({
   };
 
   return (
-    <Box>
+    <Box sx={{ width: '100%', maxWidth: '100vw', px: { xs: 0.5, sm: 1, md: 2 }, pb: 3, boxSizing: 'border-box' }}>
       <AgregarCategoriaModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
@@ -78,37 +78,49 @@ const CategoriaTable = ({
           getCategorias();
         }}
       />
-      <TextField
-        label="Buscar por nombre"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        onChange={handleSearchChange}
-      />
+      <Box sx={{ px: { xs: 0.5, sm: 0 } }}>
+        <TextField
+          label="Buscar por nombre"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          onChange={handleSearchChange}
+          size="small"
+          sx={{ mb: 2, width: '100%' }}
+        />
+      </Box>
       <Box
         display={"flex"}
-        width={"96%"}
-        marginX={"2%"}
+        width={"-webkit-fill-available"}
         justifyContent={"end"}
-        bottom={100}
+        mb={2}
+        mt={{ xs: 1, sm: 2 }}
+        px={{ xs: 0.5, sm: 0 }}
       >
         <Fab
           variant="extended"
           color="primary"
           aria-label="add"
           onClick={() => setOpenAddModal(true)}
+          size="medium"
+          sx={{
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2, md: 3 },
+            minHeight: { xs: '36px', sm: '40px' }
+          }}
         >
-          <AddIcon sx={{ mr: 1 }} />
+          <AddIcon sx={{ mr: { xs: 0.5, sm: 1 }, fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           Agregar
         </Fab>
-        <Box width={"10px"} />
       </Box>
-      <TableContainer component={Paper}>
-        <Table>
+      <Box sx={{ px: { xs: 0.5, sm: 0 }, width: '100%' }}>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto', width: '100%' }}>
+          <Table sx={{ width: '100%' }} size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Categorías</TableCell>
-              <TableCell>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Categorías</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -119,35 +131,47 @@ const CategoriaTable = ({
                   handleClick(categoria);
                 }}
                 style={{ cursor: "pointer" }}
+                hover
               >
-                <TableCell>{categoria.categoryName ?? "Sin nombre"}</TableCell>
-                <TableCell>{categoria.id ?? "Sin descripcion"}</TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>{categoria.categoryName ?? "Sin nombre"}</TableCell>
+                <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', sm: 'table-cell' } }}>{categoria.id ?? "Sin descripcion"}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="text"
-                    onClick={async (event) => {
-                      event.stopPropagation();
-                      selectCategoria(categoria);
-                      setOpenUpdateModal(true);
-                    }}
-                  >
-                    <EditIcon />
-                  </Button>
-                  <Button variant="text" onClick={async (event) => {
-                    event.stopPropagation();
-                    await deleteCategoria(categoria.id);
-                    getCategorias();
-                  }}>
-                    <DeleteIcon color="error" />
-                  </Button>
+                  <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, flexWrap: 'wrap' }}>
+                    <Button
+                      variant="text"
+                      onClick={async (event) => {
+                        event.stopPropagation();
+                        selectCategoria(categoria);
+                        setOpenUpdateModal(true);
+                      }}
+                      size="small"
+                      sx={{ minWidth: { xs: '32px', sm: '40px' }, p: { xs: 0.5, sm: 1 } }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </Button>
+                    <Button 
+                      variant="text" 
+                      onClick={async (event) => {
+                        event.stopPropagation();
+                        await deleteCategoria(categoria.id);
+                        getCategorias();
+                      }}
+                      size="small"
+                      sx={{ minWidth: { xs: '32px', sm: '40px' }, p: { xs: 0.5, sm: 1 } }}
+                    >
+                      <DeleteIcon color="error" fontSize="small" />
+                    </Button>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box height={"20px"} />
-      <SimplePagination />
+      </Box>
+      <Box sx={{ mt: 2, px: { xs: 0.5, sm: 0 } }}>
+        <SimplePagination />
+      </Box>
     </Box>
   );
 };

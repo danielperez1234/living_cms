@@ -18,8 +18,17 @@ export default function AppDrawer({
 }: PropsAppDrawer) {
   const router = useRouter();
   return (
-    <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-      <Box width={250}>
+    <Drawer 
+      open={drawerOpen} 
+      onClose={() => setDrawerOpen(false)}
+      sx={{
+        '& .MuiDrawer-paper': {
+          width: { xs: '70vw', sm: '300px' },
+          maxWidth: '300px'
+        }
+      }}
+    >
+      <Box width="100%" px={1}>
         <List>
           <NavBarTextButton
             icon={<PeopleIcon />}
